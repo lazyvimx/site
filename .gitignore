@@ -3,7 +3,7 @@ node_modules/
 .vitepress/cache/
 .vitepress/dist/
 
-# Эти страницы генерирует scripts/sync-docs.mjs из репозитория lazyvimx.
+# Эти страницы генерирует scripts/sync-docs.mjs из репозитория lazyvimx/nvim.
 /getting-started.md
 /extras.md
 /configuration.md
