@@ -22,7 +22,17 @@ export default {
 			"layout-bottom": () => [h(VimStatusline), h(VimNav)],
 		}),
 
-	enhanceApp({ app }) {
+	enhanceApp({ app, router }) {
 		app.component("DemoPlayer", DemoPlayer);
+
+		// Первый хит Метрика шлёт сама при init, переходы внутри SPA — нет.
+		if (!import.meta.env.SSR) {
+			let from = location.href;
+			router.onAfterRouteChange = () => {
+				const to = location.href;
+				(window as any).ym?.(112748414, "hit", to, { referer: from });
+				from = to;
+			};
+		}
 	},
 };
