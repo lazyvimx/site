@@ -1,6 +1,6 @@
 # lazyvimx-site
 
-Сайт документации [lazyvimx](https://github.com/aimuzov/lazyvimx) на
+Сайт документации [lazyvimx](https://github.com/lazyvimx/nvim) на
 [VitePress](https://vitepress.dev).
 
 Тексты страниц живут в репозитории lazyvimx (`docs/*.md`, `README*.md`) —

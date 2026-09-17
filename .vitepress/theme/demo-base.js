@@ -8,7 +8,7 @@
 // раз, когда демо переснимут (docs/demo/record.sh в lazyvimx, потом
 // коммит в ветку assets).
 const commit = "5de843c51aec6b5d7998a6e45ce119b09f23e88f";
-const path = `/gh/aimuzov/lazyvimx@${commit}/demo`;
+const path = `/gh/lazyvimx/nvim@${commit}/demo`;
 
 // Общий вход jsDelivr (cdn.jsdelivr.net) во многих сетях отвечает через
 // Cloudflare, а его в России режут: записи просто не доезжали. Берём

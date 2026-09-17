@@ -15,7 +15,7 @@ hero:
       link: /extras
     - theme: alt
       text: ⭐ GitHub
-      link: https://github.com/aimuzov/lazyvimx
+      link: https://github.com/lazyvimx/nvim
 
 features:
   - icon: 🎨

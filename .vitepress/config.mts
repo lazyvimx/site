@@ -7,7 +7,7 @@ import { defineConfig } from "vitepress";
 
 import { demoBase } from "./theme/demo-base.js";
 
-const github = "https://github.com/aimuzov/lazyvimx";
+const github = "https://github.com/lazyvimx/nvim";
 const site = "https://lazyvimx.aimuzov.online";
 
 const sidebarEn = [

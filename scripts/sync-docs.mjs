@@ -9,11 +9,11 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const github = "https://github.com/aimuzov/lazyvimx";
+const github = "https://github.com/lazyvimx/nvim";
 
 // Локальная рабочая копия удобнее для разработки; в CI её нет — клонируем.
 function findSource() {
-	const local = process.env.LAZYVIMX_DIR || resolve(root, "../lazyvimx");
+	const local = process.env.LAZYVIMX_DIR || resolve(root, "../nvim");
 
 	if (existsSync(join(local, "docs/EXTRAS.md"))) return local;
 
@@ -130,7 +130,7 @@ function transform(text) {
 	// вдвое легче и грузится только когда доскроллили (DemoPlayer.vue).
 	// Размер берём из тейпа — иначе место под запись не зарезервировать.
 	text = text.replace(
-		/!\[([^\]]*)\]\(https:\/\/raw\.githubusercontent\.com\/aimuzov\/lazyvimx\/assets\/demo\/([a-z0-9-]+)\.gif\)/g,
+		/!\[([^\]]*)\]\(https:\/\/raw\.githubusercontent\.com\/lazyvimx\/nvim\/assets\/demo\/([a-z0-9-]+)\.gif\)/g,
 		(_, alt, name) => {
 			const { width, height } = tapeSize(name);
 			const before = withBefore.has(name) ? " before" : "";
