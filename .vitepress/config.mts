@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 
 import { defineConfig } from "vitepress";
 
-// Контент страниц генерирует scripts/sync-docs.mjs из репозитория lazyvimx —
+// Контент страниц генерирует scripts/sync-docs.mjs из репозитория lazyvimx/nvim —
 // править тексты нужно там, здесь только оболочка сайта.
 
 import { demoBase } from "./theme/demo-base.js";
@@ -94,8 +94,8 @@ export default defineConfig({
 	],
 	lastUpdated: true,
 	sitemap: { hostname: site },
-	// README описывает сам репозиторий сайта — это не страница.
-	srcExclude: ["README.md"],
+	// README описывают сам репозиторий сайта — это не страницы.
+	srcExclude: ["README.md", "README.ru.md"],
 
 	// Inter из штатного fonts.css уезжает в предзагрузку каждой
 	// страницы, а сайт им не набран. Подменяем файл своим — тема просит
