@@ -170,3 +170,9 @@ for (const [source, en, ruPage] of pages) {
 	writeFileSync(join(root, ruPage), withTitle(transform(ruText)));
 	console.log(`synced: ${en}, ${ruPage}`);
 }
+
+// Версию сайт показывает в статуслайне. Теги сюда не доезжают — клон в CI
+// неглубокий, — а package.json release-it бампит вместе с тегом.
+const { version } = JSON.parse(readFileSync(join(src, "package.json"), "utf8"));
+writeFileSync(join(root, ".vitepress/theme/version.json"), JSON.stringify({ version }) + "\n");
+console.log(`version: ${version}`);

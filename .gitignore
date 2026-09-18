@@ -21,5 +21,8 @@ node_modules/
 /ru/architecture.md
 /ru/api.md
 
+# Версию lazyvimx кладёт туда же sync-docs.mjs — из package.json.
+/.vitepress/theme/version.json
+
 # macOS
 .DS_Store
