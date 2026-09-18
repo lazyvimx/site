@@ -359,7 +359,7 @@
 /* Сама секция прямоугольная, скос выносится за её край отдельным
    треугольником — на стыке не остаётся ни щели, ни нахлёста. */
 .vim-statusline .mode::after,
-.vim-statusline .branch::after {
+.vim-statusline .version::after {
 	content: "";
 	position: absolute;
 	z-index: 1;
@@ -410,9 +410,15 @@
 }
 
 /* Слева секцию поджимает скос предыдущей — добавляем его ширину. */
-.vim-statusline .branch {
+.vim-statusline .version {
 	padding-left: 26px;
 	color: var(--vim-accent);
+	text-decoration: none;
+	transition: color 0.25s;
+}
+
+.vim-statusline .version:hover {
+	color: var(--vim-bar-fg);
 }
 
 .vim-statusline .spacer {

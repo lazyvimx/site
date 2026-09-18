@@ -4,10 +4,13 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useData, useRoute } from "vitepress";
 
+import { version } from "./version.json";
 import { vim } from "./vim-state";
 
 const route = useRoute();
 const { lang } = useData();
+
+const release = `https://github.com/lazyvimx/nvim/releases/tag/v${version}`;
 
 const visual = ref(false);
 const percent = ref("Top");
@@ -95,7 +98,7 @@ onUnmounted(() => {
 		<!-- Глифов Nerd Font в веб-шрифте нет: точка вместо иконки режима,
 		     скошенные границы секций рисует clip-path. -->
 		<span class="section mode">● {{ mode }}</span>
-		<span class="section branch">● main</span>
+		<a class="section version" :href="release" target="_blank" rel="noopener">● v{{ version }}</a>
 		<span class="file">{{ file }}</span>
 		<span class="spacer"></span>
 		<span class="showcmd">{{ showcmd }}</span>
