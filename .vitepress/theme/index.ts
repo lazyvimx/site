@@ -26,10 +26,16 @@ export default {
 		app.component("DemoPlayer", DemoPlayer);
 
 		// Первый хит Метрика шлёт сама при init, переходы внутри SPA — нет.
+		// Хук зовётся и на старте, и на якорях, а это не новые просмотры —
+		// отсюда сравнение адреса без хеша.
 		if (!import.meta.env.SSR) {
-			let from = location.href;
+			const page = () => location.origin + location.pathname + location.search;
+
+			let from = page();
 			router.onAfterRouteChange = () => {
-				const to = location.href;
+				const to = page();
+				if (to === from) return;
+
 				(window as any).ym?.(112748414, "hit", to, { referer: from });
 				from = to;
 			};
