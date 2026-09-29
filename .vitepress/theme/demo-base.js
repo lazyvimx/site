@@ -7,7 +7,7 @@
 // сокращённого кеш снова недельный. Цена — эту строку править всякий
 // раз, когда демо переснимут (docs/demo/record.sh в lazyvimx, потом
 // коммит в ветку assets).
-const commit = "26b14067f8c39f2c329d03563016122dd5eed4a0";
+const commit = "95b12fb43bda548cec14c3134a9bd79abbeade56";
 const path = `/gh/lazyvimx/nvim@${commit}/demo`;
 
 // Общий вход jsDelivr (cdn.jsdelivr.net) во многих сетях отвечает через
