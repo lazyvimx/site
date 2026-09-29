@@ -150,6 +150,13 @@ function transform(text) {
 	text = text.replaceAll("(CHANGELOG.md", `(${github}/blob/main/CHANGELOG.md`);
 	text = text.replaceAll("(./)", `(${github}/tree/main/docs)`);
 
+	// Имя модуля в строке импорта экстры ведёт на её исходник. Ветка
+	// develop, как и у доков: свежих экстр в main может ещё не быть.
+	text = text.replace(
+		/^(\*\*[^*]+:\*\* )`(lazyvimx\.extras\.[a-z0-9.-]+)`/gm,
+		(_, label, mod) => `${label}[\`${mod}\`](${github}/blob/develop/lua/${mod.replaceAll(".", "/")}.lua)`,
+	);
+
 	return text;
 }
 
