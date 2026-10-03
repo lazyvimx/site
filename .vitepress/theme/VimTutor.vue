@@ -5,7 +5,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useData } from "vitepress";
 
-import { isTouchOnly } from "./vim-keys";
+import { isEditingContent, isTouchOnly, keyCandidates } from "./vim-keys";
 import { stopTutor, vim } from "./vim-state";
 
 const { lang } = useData();
@@ -108,6 +108,12 @@ const text = computed(() => {
 	return ru.value ? source.ru : source.en;
 });
 
+const hint = computed(() => {
+	if (finished.value) return ru.value ? "q — закрыть" : "q — close";
+	if (passed.value) return "✓";
+	return ru.value ? "q — выйти · n — пропустить" : "q — quit · n — skip";
+});
+
 function next() {
 	seen = {};
 	passed.value = false;
@@ -136,6 +142,16 @@ function check(event) {
 	if (STEPS[vim.tutor].done(event, seen)) pass();
 }
 
+// После финала туториал уже остановлен и VimNav q не ловит — финальную
+// карточку закрываем сами.
+function onKeydown(event) {
+	if (!finished.value || hidden.value || event.ctrlKey || event.metaKey || event.altKey) return;
+	if (isEditingContent(event) || !keyCandidates(event).includes("q")) return;
+
+	event.preventDefault();
+	finished.value = false;
+}
+
 function close() {
 	if (finished.value) finished.value = false;
 	else stopTutor();
@@ -160,6 +176,8 @@ watch(
 watch(
 	() => vim.tutor,
 	(index) => {
+		clearTimeout(flashTimer);
+		passed.value = false;
 		seen = {};
 		write("sessionStorage", KEY_STEP, index === null ? null : String(index));
 		if (index !== null) finished.value = false;
@@ -178,9 +196,10 @@ onMounted(() => {
 
 	vim.tutorDone = read("localStorage", KEY_DONE) === "1";
 
-	const saved = read("sessionStorage", KEY_STEP);
-	if (saved !== null && Number(saved) < STEPS.length) vim.tutor = Number(saved);
+	const saved = Number(read("sessionStorage", KEY_STEP) ?? NaN);
+	if (Number.isInteger(saved) && saved >= 0 && saved < STEPS.length) vim.tutor = saved;
 
+	window.addEventListener("keydown", onKeydown);
 	document.addEventListener("click", onClick, true);
 
 	// Модалку поиска VitePress телепортирует в body — смотрим за ним.
@@ -189,6 +208,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	window.removeEventListener("keydown", onKeydown);
 	document.removeEventListener("click", onClick, true);
 	observer?.disconnect();
 	clearTimeout(flashTimer);
@@ -203,8 +223,6 @@ onUnmounted(() => {
 			<button class="close" type="button" :aria-label="ru ? 'Закрыть' : 'Close'" @click="close">×</button>
 		</div>
 		<p class="text" v-html="text" />
-		<div v-if="!finished" class="keys">
-			{{ passed ? "✓" : ru ? "q — выйти · n — пропустить" : "q — quit · n — skip" }}
-		</div>
+		<div class="keys">{{ hint }}</div>
 	</div>
 </template>
