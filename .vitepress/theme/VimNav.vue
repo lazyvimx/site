@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject, nextTick, onMounted, onUnmounted, ref, watch, watchEffect } from "vue";
+import { computed, inject, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { getScrollOffset, useData, useRoute, useRouter, withBase } from "vitepress";
 import { useLangs } from "vitepress/dist/client/theme-default/composables/langs.js";
 
@@ -322,6 +322,92 @@ const cmdInput = ref(null);
 const typed = [];
 let typedAt = -1;
 
+// Пока Tab листает меню, оно строится от набранного руками, а не от
+// подставленного кандидата — иначе список схлопнулся бы до одного пункта.
+const anchor = ref(null);
+const selected = ref(-1);
+
+const COMMANDS = [
+	{ word: "edit", en: "open a page", ru: "открыть страницу" },
+	{ word: "help", en: "key bindings", ru: "клавиши" },
+	{ word: "set", en: "set an option", ru: "задать опцию" },
+	{ word: "lang", en: "switch language", ru: "сменить язык" },
+	{ word: "LazyExtras", en: "list of extras", ru: "список экстр" },
+	{ word: "q", en: "go back", ru: "назад" },
+];
+
+function argsFor(name) {
+	switch (name) {
+		case "e":
+		case "edit":
+			return pages().map((item) => ({ word: slug(item.link), desc: item.text }));
+		case "set":
+			return [
+				{ word: "bg=dark", desc: ru.value ? "тёмная тема" : "dark theme" },
+				{ word: "bg=light", desc: ru.value ? "светлая тема" : "light theme" },
+			];
+		case "lang":
+			return [
+				{ word: "en", desc: "English" },
+				{ word: "ru", desc: "Русский" },
+			];
+	}
+
+	return [];
+}
+
+// Голова строки — команда, хвост — аргумент; дополняется то, что под курсором.
+function parseLine(line) {
+	const text = line.trimStart();
+	const space = text.search(/\s/);
+
+	if (space < 0) return { name: null, arg: text };
+
+	return { name: text.slice(0, space), arg: text.slice(space).trimStart() };
+}
+
+const menu = computed(() => {
+	if (cmd.value === null) return [];
+
+	const { name, arg } = parseLine(anchor.value ?? cmd.value);
+	const needle = arg.toLowerCase();
+
+	const items =
+		name === null
+			? COMMANDS.map((item) => ({ word: item.word, desc: ru.value ? item.ru : item.en }))
+			: argsFor(name);
+
+	return items.filter((item) => item.word.toLowerCase().startsWith(needle));
+});
+
+function fill(item, { space = false } = {}) {
+	const { name } = parseLine(anchor.value ?? cmd.value);
+	const line = name === null ? item.word : `${name} ${item.word}`;
+
+	cmd.value = space && name === null ? `${line} ` : line;
+}
+
+function cycle(delta) {
+	if (!menu.value.length) return;
+	if (anchor.value === null) anchor.value = cmd.value;
+
+	const next = selected.value + delta;
+	selected.value = next < 0 ? menu.value.length - 1 : next % menu.value.length;
+
+	fill(menu.value[selected.value]);
+}
+
+// Клик по команде сразу ставит пробел — следом откроется меню аргументов.
+function pick(index) {
+	fill(menu.value[index], { space: true });
+	dropMenu();
+}
+
+function dropMenu() {
+	anchor.value = null;
+	selected.value = -1;
+}
+
 function openCmdline() {
 	reset();
 	clearMessage();
@@ -329,6 +415,7 @@ function openCmdline() {
 	vim.mode = "COMMAND";
 	cmd.value = "";
 	typedAt = -1;
+	dropMenu();
 
 	nextTick(() => cmdInput.value?.focus());
 }
@@ -336,6 +423,7 @@ function openCmdline() {
 function closeCmdline() {
 	cmd.value = null;
 	vim.mode = "NORMAL";
+	dropMenu();
 }
 
 function onCmdKey(event) {
@@ -353,9 +441,9 @@ function onCmdKey(event) {
 		return runCommand(line);
 	}
 
-	if (event.key === "Tab") {
+	if (event.key === "Tab" || (event.ctrlKey && (event.key === "n" || event.key === "p"))) {
 		event.preventDefault();
-		return complete();
+		return cycle(event.shiftKey || event.key === "p" ? -1 : 1);
 	}
 
 	if (event.key === "ArrowUp" || event.key === "ArrowDown") {
@@ -367,19 +455,7 @@ function onCmdKey(event) {
 function recall(delta) {
 	typedAt = Math.max(-1, Math.min(typed.length - 1, typedAt + delta));
 	cmd.value = typed[typedAt] ?? "";
-}
-
-// Tab крутит страницы по кругу, как wildmenu.
-function complete() {
-	const [name, ...rest] = cmd.value.split(/\s+/);
-	if (name !== "e" && name !== "edit") return;
-
-	const all = pages().map((item) => slug(item.link));
-	const arg = rest.join(" ").toLowerCase();
-	const at = all.indexOf(arg);
-
-	const next = at >= 0 ? all[(at + 1) % all.length] : all.find((page) => page.startsWith(arg));
-	if (next) cmd.value = `${name} ${next}`;
+	dropMenu();
 }
 
 function runCommand(raw) {
@@ -535,14 +611,13 @@ function onKeydown(event) {
 
 // ——— жизненный цикл ———————————————————————————————————————————————
 
-// Командная строка встаёт на самый низ, статуслайн уезжает над ней —
-// как две последние строки в vim.
+// Командная строка ложится поверх статуслайна, как view = "cmdline" в noice.
 const barOpen = computed(() => cmd.value !== null || !!vim.message);
 
-watchEffect(() => {
-	if (typeof document === "undefined") return;
+watch(selected, (index) => {
+	if (index < 0) return;
 
-	document.documentElement.classList.toggle("vim-cmdline-open", barOpen.value);
+	nextTick(() => document.querySelector(".vim-cmdmenu .selected")?.scrollIntoView({ block: "nearest" }));
 });
 
 watch(() => route.path, reset);
@@ -561,7 +636,6 @@ onUnmounted(() => {
 	window.removeEventListener("touchmove", drop);
 
 	closeHints();
-	document.documentElement.classList.remove("vim-cmdline-open");
 });
 </script>
 
@@ -570,6 +644,18 @@ onUnmounted(() => {
 	<VimWhichKey v-if="panel" :panel="panel" />
 
 	<div v-if="barOpen" class="vim-cmdline">
+		<ul v-if="cmd !== null && menu.length" class="vim-cmdmenu">
+			<li
+				v-for="(item, index) in menu"
+				:key="item.word"
+				:class="{ selected: index === selected }"
+				@mousedown.prevent="pick(index)"
+			>
+				<span class="word">{{ item.word }}</span>
+				<span class="desc">{{ item.desc }}</span>
+			</li>
+		</ul>
+
 		<template v-if="cmd !== null">
 			<span class="prompt">:</span>
 			<input
@@ -580,6 +666,7 @@ onUnmounted(() => {
 				autocomplete="off"
 				spellcheck="false"
 				@blur="closeCmdline"
+				@input="dropMenu"
 				@keydown="onCmdKey"
 			/>
 		</template>
