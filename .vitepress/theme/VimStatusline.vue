@@ -105,7 +105,7 @@ onUnmounted(() => {
 		<!-- Про клавиши иначе никто не узнает — пусть о них напоминает
 		     сама полоса. -->
 		<button class="help" type="button" @click="vim.sheet = !vim.sheet">?</button>
-		<span class="section credit">{{ credit }}</span>
+		<a class="section credit" href="https://github.com/aimuzov" target="_blank" rel="noopener">{{ credit }}</a>
 		<span class="section percent">{{ percent }}</span>
 	</div>
 </template>

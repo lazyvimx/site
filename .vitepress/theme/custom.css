@@ -392,6 +392,13 @@
 /* Справа секцию подпирает скос следующей — ей тоже нужен запас. */
 .vim-statusline .credit {
 	padding-right: 26px;
+	color: inherit;
+	text-decoration: none;
+	transition: color 0.25s;
+}
+
+.vim-statusline .credit:hover {
+	color: var(--vim-accent);
 }
 
 .vim-statusline .mode {
