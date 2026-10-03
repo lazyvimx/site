@@ -12,6 +12,14 @@ export const vim = reactive({
 	message: "",
 	// Шпаргалка по всем клавишам: её открывают и «?», и кнопка в полосе.
 	sheet: false,
+	// Последнее действие навигации: { seq }, { cmd }, { whichkey } или
+	// { tutor: "skip" }. Каждый раз новый объект — watch сработает и на повтор.
+	last: null,
+	// Открыт ли оверлей навигации: командная строка, метки, which-key.
+	overlay: false,
+	// Номер шага туториала или null; tutorDone — пройден ли он целиком.
+	tutor: null,
+	tutorDone: false,
 });
 
 let timer = 0;
@@ -26,4 +34,16 @@ export function setMessage(text) {
 export function clearMessage() {
 	clearTimeout(timer);
 	vim.message = "";
+}
+
+export function track(event) {
+	vim.last = { ...event };
+}
+
+export function startTutor() {
+	vim.tutor = 0;
+}
+
+export function stopTutor() {
+	vim.tutor = null;
 }
