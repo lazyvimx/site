@@ -461,14 +461,16 @@
 	text-align: right;
 }
 
-.vim-statusline .help {
+.vim-statusline .help,
+.vim-statusline .tutor {
 	padding: 0 12px;
 	color: var(--vim-dim);
 	font-weight: 700;
 	transition: color 0.25s;
 }
 
-.vim-statusline .help:hover {
+.vim-statusline .help:hover,
+.vim-statusline .tutor:hover {
 	color: var(--vim-accent);
 }
 
@@ -892,4 +894,12 @@
 
 ::-webkit-scrollbar-track {
 	background: transparent;
+}
+
+/* Без клавиатуры vim-слоя нет — и звать в туториал некуда. */
+@media (hover: none) {
+	.vim-statusline .tutor,
+	.VPHero .action:has(a[href$="#tutor"]) {
+		display: none;
+	}
 }

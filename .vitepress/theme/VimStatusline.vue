@@ -5,7 +5,7 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useData, useRoute } from "vitepress";
 
 import { version } from "./version.json";
-import { vim } from "./vim-state";
+import { startTutor, vim } from "./vim-state";
 
 const route = useRoute();
 const { lang } = useData();
@@ -22,7 +22,14 @@ const file = computed(() => {
 });
 
 const command = computed(() => vim.mode === "COMMAND");
-const mode = computed(() => (command.value ? "COMMAND" : visual.value ? "VISUAL" : "NORMAL"));
+const mode = computed(() => {
+	if (command.value) return "COMMAND";
+	if (visual.value) return "VISUAL";
+	return vim.tutor === null ? "NORMAL" : "TUTOR";
+});
+
+// Предложение пройти туториал уходит, когда он пройден или уже идёт.
+const offerTutor = computed(() => vim.tutor === null && !vim.tutorDone);
 const credit = computed(() => (lang.value === "ru" ? "сделано с ❤️ aimuzov" : "made with ❤️ by aimuzov"));
 
 // Эхо набранного, как showcmd: пробел лидера иначе выглядит пустотой.
@@ -104,6 +111,7 @@ onUnmounted(() => {
 		<span class="showcmd">{{ showcmd }}</span>
 		<!-- Про клавиши иначе никто не узнает — пусть о них напоминает
 		     сама полоса. -->
+		<button v-if="offerTutor" class="tutor" type="button" @click="startTutor">▶ tutor</button>
 		<button class="help" type="button" @click="vim.sheet = !vim.sheet">?</button>
 		<a class="section credit" href="https://github.com/aimuzov" target="_blank" rel="noopener">{{ credit }}</a>
 		<span class="section percent">{{ percent }}</span>
