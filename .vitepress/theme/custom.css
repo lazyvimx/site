@@ -635,6 +635,58 @@
 	font-size: 12px;
 }
 
+/* Карточка туториала — в правом углу над статуслайном, страницу не
+   закрывает и не затемняет. */
+.vim-tutor {
+	position: fixed;
+	right: 16px;
+	bottom: 38px;
+	z-index: 59;
+	width: min(360px, calc(100vw - 32px));
+	padding: 10px 16px 12px;
+	border: 1px solid var(--vp-c-divider);
+	background: var(--vim-panel-base);
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+	font-size: 12px;
+	line-height: 20px;
+}
+
+.vim-tutor .head {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 6px;
+	color: var(--vim-accent);
+	font-weight: 700;
+}
+
+.vim-tutor .close {
+	color: var(--vim-dim);
+	font-size: 16px;
+	transition: color 0.25s;
+}
+
+.vim-tutor .close:hover {
+	color: var(--vim-accent);
+}
+
+.vim-tutor .text {
+	margin: 0;
+	color: var(--vp-c-text-1);
+}
+
+.vim-tutor kbd {
+	padding: 0 5px;
+	border: 1px solid var(--vp-c-divider);
+	background: var(--vim-section-bg);
+	font: inherit;
+	font-weight: 700;
+}
+
+.vim-tutor .keys {
+	margin-top: 8px;
+	color: var(--vim-dim);
+}
+
 .vim-whichkey .head {
 	margin-bottom: 10px;
 	color: var(--vim-accent);
