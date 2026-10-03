@@ -16,6 +16,9 @@ hero:
     - theme: alt
       text: ⭐ GitHub
       link: https://github.com/lazyvimx/nvim
+    - theme: alt
+      text: ⌨️ Try vim keys
+      link: "#tutor"
 
 features:
   - icon: 🎨
