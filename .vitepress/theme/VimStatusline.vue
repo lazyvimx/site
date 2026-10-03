@@ -13,6 +13,7 @@ const { lang } = useData();
 const release = `https://github.com/lazyvimx/nvim/releases/tag/v${version}`;
 
 const visual = ref(false);
+const mounted = ref(false);
 const percent = ref("Top");
 
 const file = computed(() => {
@@ -28,8 +29,9 @@ const mode = computed(() => {
 	return vim.tutor === null ? "NORMAL" : "TUTOR";
 });
 
-// Предложение пройти туториал уходит, когда он пройден или уже идёт.
-const offerTutor = computed(() => vim.tutor === null && !vim.tutorDone);
+// До маунта неизвестно, пройден ли туториал, — без этого кнопка
+// мелькала бы в статическом HTML у тех, кто его уже прошёл.
+const offerTutor = computed(() => mounted.value && vim.tutor === null && !vim.tutorDone);
 const credit = computed(() => (lang.value === "ru" ? "сделано с ❤️ aimuzov" : "made with ❤️ by aimuzov"));
 
 // Эхо набранного, как showcmd: пробел лидера иначе выглядит пустотой.
@@ -75,6 +77,7 @@ function onSelection() {
 }
 
 onMounted(() => {
+	mounted.value = true;
 	window.addEventListener("scroll", onScroll, { passive: true });
 	window.addEventListener("resize", onResize, { passive: true });
 	document.addEventListener("selectionchange", onSelection);

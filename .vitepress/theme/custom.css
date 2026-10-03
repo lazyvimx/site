@@ -896,9 +896,13 @@
 	background: transparent;
 }
 
-/* Без клавиатуры vim-слоя нет — и звать в туториал некуда. */
+/* Без клавиатуры vim-слоя нет — и звать в туториал некуда. Правило с
+   :has() отдельно: незнакомый селектор выкинул бы весь список. */
 @media (hover: none) {
-	.vim-statusline .tutor,
+	.vim-statusline .tutor {
+		display: none;
+	}
+
 	.VPHero .action:has(a[href$="#tutor"]) {
 		display: none;
 	}
