@@ -470,7 +470,7 @@ function runCommand(raw) {
 
 	if (/^\d+$/.test(name)) return gotoHeading(Number(name));
 
-	track({ cmd: name });
+	track({ cmd: name, arg });
 
 	switch (name) {
 		case "q":
@@ -595,8 +595,9 @@ function onKeydown(event) {
 
 	const keys = keyCandidates(event);
 
-	// Пока идёт туториал, q и n — его клавиши: в раскладке они свободны.
-	if (vim.tutor !== null && !vim.pending && !vim.count) {
+	// Пока идёт туториал и поверх ничего не открыто, q и n — его клавиши:
+	// в раскладке они свободны.
+	if (vim.tutor !== null && !vim.overlay && !vim.pending && !vim.count) {
 		if (keys.includes("q")) {
 			event.preventDefault();
 			return stopTutor();
