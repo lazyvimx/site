@@ -401,25 +401,41 @@
 	color: var(--vim-accent);
 }
 
+/* Цвет режима красит всю полосу, как в lualine: заливку крайних секций
+   и текст версии. */
+.vim-statusline {
+	--vim-mode: var(--vim-mode-normal);
+}
+
+.vim-statusline.visual {
+	--vim-mode: var(--vim-mode-visual);
+}
+
+.vim-statusline.command {
+	--vim-mode: var(--vim-mode-command);
+}
+
+/* На светлой заливке секции чистые цвета режимов не тянут 4.5:1 —
+   текст берёт их затемнённый вариант. */
+.vim-statusline {
+	--vim-mode-text: color-mix(in srgb, var(--vim-mode) 50%, #000);
+}
+
+.dark .vim-statusline {
+	--vim-mode-text: var(--vim-mode);
+}
+
 .vim-statusline .mode {
-	background: var(--vim-mode-normal);
+	background: var(--vim-mode);
 	color: var(--vim-mode-fg);
 	font-weight: 700;
 	letter-spacing: 0.06em;
 }
 
-.vim-statusline.visual .mode {
-	background: var(--vim-mode-visual);
-}
-
-.vim-statusline.command .mode {
-	background: var(--vim-mode-command);
-}
-
 /* Слева секцию поджимает скос предыдущей — добавляем его ширину. */
 .vim-statusline .version {
 	padding-left: 26px;
-	color: var(--vim-accent);
+	color: var(--vim-mode-text);
 	text-decoration: none;
 	transition: color 0.25s;
 }
@@ -459,7 +475,7 @@
 /* Ширина фиксирована: иначе секция дёргается на каждом проценте. */
 .vim-statusline .percent {
 	width: 74px;
-	background: var(--vim-mode-normal);
+	background: var(--vim-mode);
 	color: var(--vim-mode-fg);
 	text-align: center;
 }
@@ -478,35 +494,47 @@
 	padding-bottom: 34px;
 }
 
-/* Командная строка и сообщения — на самом низу, статуслайн поднимается
-   над ними: те же две последние строки, что и в vim. */
+/* Командная строка и сообщения ложатся поверх статуслайна, а не
+   выталкивают его вверх, — как view = "cmdline" в noice. */
 .vim-cmdline {
 	position: fixed;
 	right: 0;
 	bottom: 0;
 	left: 0;
-	z-index: 60;
+	z-index: 61;
 	display: flex;
 	align-items: center;
 	height: 26px;
-	padding: 0 16px;
-	background: var(--vp-c-bg);
+	background: var(--vim-bar-bg);
+	color: var(--vim-bar-fg);
 	font-size: 12px;
 	line-height: 26px;
 	white-space: nowrap;
 }
 
-.vim-cmdline-open .vim-statusline {
-	bottom: 26px;
+/* Иконка noice — секция в цвет режима COMMAND с тем же скосом. */
+.vim-cmdline .prompt {
+	position: relative;
+	padding: 0 16px;
+	background: var(--vim-mode-command);
+	color: var(--vim-mode-fg);
+	font-weight: 700;
 }
 
-.vim-cmdline .prompt {
-	color: var(--vim-accent);
-	font-weight: 700;
+.vim-cmdline .prompt::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: -10px;
+	bottom: 0;
+	width: 10px;
+	background: inherit;
+	clip-path: polygon(0 0, 100% 100%, 0 100%);
 }
 
 .vim-cmdline .input {
 	flex: 1;
+	padding: 0 22px;
 	border: 0;
 	outline: 0;
 	background: transparent;
@@ -515,7 +543,53 @@
 }
 
 .vim-cmdline .message {
+	padding: 0 16px;
 	color: var(--vim-error);
+}
+
+/* Меню автокомплита встаёт над строкой от начала ввода, как у cmp. */
+.vim-cmdmenu {
+	position: absolute;
+	bottom: 100%;
+	left: 46px;
+	min-width: 280px;
+	max-width: calc(100vw - 62px);
+	max-height: calc(26px * 10);
+	overflow-y: auto;
+	margin: 0 0 4px;
+	padding: 2px 0;
+	border: 1px solid var(--vp-c-divider);
+	background: var(--vim-panel-base);
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+	list-style: none;
+}
+
+.vim-cmdmenu li {
+	display: flex;
+	gap: 24px;
+	justify-content: space-between;
+	padding: 0 10px;
+	line-height: 24px;
+	cursor: pointer;
+}
+
+.vim-cmdmenu li:hover {
+	background: var(--vim-cursorline);
+}
+
+.vim-cmdmenu .selected,
+.vim-cmdmenu .selected:hover {
+	background: var(--vim-visual-bg);
+}
+
+.vim-cmdmenu .word {
+	color: var(--vp-c-text-1);
+}
+
+.vim-cmdmenu .desc {
+	overflow: hidden;
+	color: var(--vim-dim);
+	text-overflow: ellipsis;
 }
 
 /* Метки на ссылках. Слой прибит к вьюпорту, поэтому координаты меток —
@@ -557,10 +631,6 @@
 	border-top: 1px solid var(--vp-c-divider);
 	background: var(--vim-panel-base);
 	font-size: 12px;
-}
-
-.vim-cmdline-open .vim-whichkey {
-	bottom: 52px;
 }
 
 .vim-whichkey .head {
