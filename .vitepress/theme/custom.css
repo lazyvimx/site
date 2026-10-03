@@ -521,15 +521,17 @@
 	font-weight: 700;
 }
 
+/* Ширина «:» дробная, и стык встаёт на полпикселя — скос заходит на
+   секцию на 1px, чтобы в сглаженной кромке не просвечивал фон. */
 .vim-cmdline .prompt::after {
 	content: "";
 	position: absolute;
 	top: 0;
 	right: -10px;
 	bottom: 0;
-	width: 10px;
+	width: 11px;
 	background: inherit;
-	clip-path: polygon(0 0, 100% 100%, 0 100%);
+	clip-path: polygon(0 0, 1px 0, 100% 100%, 0 100%);
 }
 
 .vim-cmdline .input {
