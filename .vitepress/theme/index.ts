@@ -10,6 +10,7 @@ import HeroDemo from "./HeroDemo.vue";
 import HomeLandmark from "./HomeLandmark.vue";
 import VimNav from "./VimNav.vue";
 import VimStatusline from "./VimStatusline.vue";
+import VimTutor from "./VimTutor.vue";
 
 export default {
 	extends: DefaultTheme,
@@ -19,7 +20,7 @@ export default {
 	Layout: () =>
 		h(DefaultTheme.Layout, null, {
 			"home-hero-before": () => [h(HeroDemo), h(HomeLandmark)],
-			"layout-bottom": () => [h(VimStatusline), h(VimNav)],
+			"layout-bottom": () => [h(VimStatusline), h(VimNav), h(VimTutor)],
 		}),
 
 	enhanceApp({ app, router }) {

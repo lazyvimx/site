@@ -1,10 +1,10 @@
 <script setup>
-import { computed, inject, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, inject, nextTick, onMounted, onUnmounted, ref, watch, watchEffect } from "vue";
 import { getScrollOffset, useData, useRoute, useRouter, withBase } from "vitepress";
 import { useLangs } from "vitepress/dist/client/theme-default/composables/langs.js";
 
 import { isEditingContent, isTouchOnly, keyCandidates } from "./vim-keys";
-import { clearMessage, setMessage, vim } from "./vim-state";
+import { clearMessage, setMessage, startTutor, stopTutor, track, vim } from "./vim-state";
 import VimHints from "./VimHints.vue";
 import VimWhichKey from "./VimWhichKey.vue";
 
@@ -333,6 +333,7 @@ const COMMANDS = [
 	{ word: "set", en: "set an option", ru: "задать опцию" },
 	{ word: "lang", en: "switch language", ru: "сменить язык" },
 	{ word: "LazyExtras", en: "list of extras", ru: "список экстр" },
+	{ word: "Tutor", en: "interactive tutorial", ru: "интерактивный туториал" },
 	{ word: "q", en: "go back", ru: "назад" },
 ];
 
@@ -469,6 +470,8 @@ function runCommand(raw) {
 
 	if (/^\d+$/.test(name)) return gotoHeading(Number(name));
 
+	track({ cmd: name, arg });
+
 	switch (name) {
 		case "q":
 		case "q!":
@@ -486,6 +489,8 @@ function runCommand(raw) {
 			return setLang(arg);
 		case "LazyExtras":
 			return editPage("extras");
+		case "Tutor":
+			return startTutor();
 		case "w":
 		case "wq":
 		case "x":
@@ -527,7 +532,10 @@ function apply(seq) {
 	if (!binding) {
 		vim.pending = seq;
 		clearTimeout(whichKeyTimer);
-		whichKeyTimer = setTimeout(() => (whichKey.value = true), 250);
+		whichKeyTimer = setTimeout(() => {
+			whichKey.value = true;
+			track({ whichkey: seq });
+		}, 250);
 
 		return;
 	}
@@ -535,6 +543,7 @@ function apply(seq) {
 	const count = Number(vim.count) || 1;
 	reset();
 	binding.run(count);
+	track({ seq });
 }
 
 // Cmd/Ctrl-K VitePress тоже ловит по event.key — в кириллице туда
@@ -586,6 +595,20 @@ function onKeydown(event) {
 
 	const keys = keyCandidates(event);
 
+	// Пока идёт туториал и поверх ничего не открыто, q и n — его клавиши:
+	// в раскладке они свободны.
+	if (vim.tutor !== null && !vim.overlay && !vim.pending && !vim.count) {
+		if (keys.includes("q")) {
+			event.preventDefault();
+			return stopTutor();
+		}
+
+		if (keys.includes("n")) {
+			event.preventDefault();
+			return track({ tutor: "skip" });
+		}
+	}
+
 	// Счётчик набирается до последовательности: 3j, 5}
 	if (!vim.pending) {
 		const digit = keys.find((ch) => ch >= "0" && ch <= "9");
@@ -613,6 +636,9 @@ function onKeydown(event) {
 
 // Командная строка ложится поверх статуслайна, как view = "cmdline" в noice.
 const barOpen = computed(() => cmd.value !== null || !!vim.message);
+
+// Туториал прячет карточку, пока поверх страницы что-то открыто.
+watchEffect(() => (vim.overlay = cmd.value !== null || !!hints.value || !!panel.value));
 
 watch(selected, (index) => {
 	if (index < 0) return;

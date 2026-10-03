@@ -16,6 +16,11 @@ hero:
     - theme: alt
       text: ⭐ GitHub
       link: https://github.com/lazyvimx/nvim
+    # target уводит ссылку из-под роутера VitePress — клик целиком ловит туториал.
+    - theme: alt
+      text: ⌨️ Try vim keys
+      link: "#tutor"
+      target: _self
 
 features:
   - icon: 🎨

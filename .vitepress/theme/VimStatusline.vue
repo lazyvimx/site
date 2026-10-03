@@ -5,7 +5,7 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useData, useRoute } from "vitepress";
 
 import { version } from "./version.json";
-import { vim } from "./vim-state";
+import { startTutor, vim } from "./vim-state";
 
 const route = useRoute();
 const { lang } = useData();
@@ -13,6 +13,7 @@ const { lang } = useData();
 const release = `https://github.com/lazyvimx/nvim/releases/tag/v${version}`;
 
 const visual = ref(false);
+const mounted = ref(false);
 const percent = ref("Top");
 
 const file = computed(() => {
@@ -22,7 +23,15 @@ const file = computed(() => {
 });
 
 const command = computed(() => vim.mode === "COMMAND");
-const mode = computed(() => (command.value ? "COMMAND" : visual.value ? "VISUAL" : "NORMAL"));
+const mode = computed(() => {
+	if (command.value) return "COMMAND";
+	if (visual.value) return "VISUAL";
+	return vim.tutor === null ? "NORMAL" : "TUTOR";
+});
+
+// До маунта неизвестно, пройден ли туториал, — без этого кнопка
+// мелькала бы в статическом HTML у тех, кто его уже прошёл.
+const offerTutor = computed(() => mounted.value && vim.tutor === null && !vim.tutorDone);
 const credit = computed(() => (lang.value === "ru" ? "сделано с ❤️ aimuzov" : "made with ❤️ by aimuzov"));
 
 // Эхо набранного, как showcmd: пробел лидера иначе выглядит пустотой.
@@ -68,6 +77,7 @@ function onSelection() {
 }
 
 onMounted(() => {
+	mounted.value = true;
 	window.addEventListener("scroll", onScroll, { passive: true });
 	window.addEventListener("resize", onResize, { passive: true });
 	document.addEventListener("selectionchange", onSelection);
@@ -104,6 +114,7 @@ onUnmounted(() => {
 		<span class="showcmd">{{ showcmd }}</span>
 		<!-- Про клавиши иначе никто не узнает — пусть о них напоминает
 		     сама полоса. -->
+		<button v-if="offerTutor" class="tutor" type="button" @click="startTutor">▶ tutor</button>
 		<button class="help" type="button" @click="vim.sheet = !vim.sheet">?</button>
 		<a class="section credit" href="https://github.com/aimuzov" target="_blank" rel="noopener">{{ credit }}</a>
 		<span class="section percent">{{ percent }}</span>
