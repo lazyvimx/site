@@ -32,6 +32,10 @@ const src = computed(() => {
 
 const video = ref(null);
 const visible = ref(false);
+// До первого кадра рамка пустая — без спиннера непонятно, грузится ли
+// там что-то вообще. Гасим и на canplay: если автоплей отклонят,
+// playing не придёт, а вечно крутящийся спиннер хуже никакого.
+const loading = ref(true);
 let observer;
 
 // У <video> нет loading="lazy", так что ленивость держим сами: пока
@@ -73,7 +77,12 @@ function play() {
 
 // Запись не доехала — уходим на запасной вход CDN. Адрес сменится,
 // watch выше перезарядит <video>. Если и там ошибка, адрес останется
-// прежним и второго круга не будет.
+// прежним и второго круга не будет — тогда и спиннер больше не нужен.
+function onError() {
+	const before = src.value;
+	demoUnreachable();
+	if (src.value === before) loading.value = false;
+}
 </script>
 
 <!-- Всё внутри — строчные элементы, и корень тоже. Компонент попадает
@@ -100,8 +109,15 @@ function play() {
 				loop
 				playsinline
 				preload="none"
-				@error="demoUnreachable"
+				@loadstart="loading = true"
+				@waiting="loading = true"
+				@canplay="loading = false"
+				@playing="loading = false"
+				@error="onError"
 			/>
+			<span class="demo-loading" :class="{ active: visible && loading }" aria-hidden="true">
+				<span class="demo-spinner" />
+			</span>
 		</span>
 	</span>
 </template>

@@ -133,6 +133,7 @@
 }
 
 .demo-frame {
+	position: relative;
 	margin-top: 8px;
 }
 
@@ -147,6 +148,59 @@
 	border-radius: 10px;
 	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
 	background: var(--vp-c-bg-soft);
+}
+
+/* Затемнение со спиннером, пока запись грузится (см. DemoPlayer.vue).
+   Появляется с задержкой: запись из кэша стартует мгновенно, и без неё
+   рамка мигала бы на каждом возврате к ней. */
+.demo-loading {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: color-mix(in srgb, var(--vp-c-bg-soft) 35%, transparent);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s;
+}
+
+.demo-loading.active {
+	opacity: 1;
+	transition-delay: 0.15s;
+}
+
+/* Скруглений на сайте нет, и крутящийся круг вышел бы квадратом, —
+   крутим кадры, как в терминальных спиннерах. Лента кадров едет в окне
+   шириной в один символ, поэтому кадры — только ASCII: braille-спиннера
+   в JetBrains Mono нет, у запасного шрифта другая ширина, и лента
+   уползала бы. */
+.demo-spinner {
+	width: 1ch;
+	overflow: hidden;
+	font-size: 32px;
+	line-height: 1;
+	color: var(--vp-c-text-1);
+	white-space: nowrap;
+}
+
+.demo-spinner::before {
+	content: "|/-\\";
+	display: inline-block;
+	animation: demo-spin 0.6s steps(4) infinite;
+}
+
+@keyframes demo-spin {
+	to {
+		transform: translateX(-4ch);
+	}
+}
+
+/* Совсем не крутить нельзя — пропадёт сам смысл индикатора. */
+@media (prefers-reduced-motion: reduce) {
+	.demo-spinner::before {
+		animation-duration: 2.4s;
+	}
 }
 
 /* Переключатель «После | До» над записью (см. DemoPlayer.vue). */
