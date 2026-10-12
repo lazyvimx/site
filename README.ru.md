@@ -24,5 +24,8 @@ npm run docs:preview  # посмотреть прод-сборку
 
 ## Деплой
 
-GitHub Actions собирает и выкладывает сайт на Pages при пуше в `main`.
-После правки доков в lazyvimx пересборка запускается кнопкой Run workflow.
+Сайт живёт на сервере projects: nginx в контейнере `lazyvimx-site`, домен
+и TLS держит общий Caddy из aimuzov-projects/server-infra. При пуше в `main`
+GitHub Actions заходит на сервер по SSH, а там ключ привязан к
+`deploy/remote.sh`: он подтягивает `main` и пересобирает образ. После правки
+доков в lazyvimx пересборка запускается кнопкой Run workflow.

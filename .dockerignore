@@ -1,0 +1,5 @@
+.git
+node_modules
+.cache
+.vitepress/cache
+.vitepress/dist
