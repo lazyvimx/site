@@ -34,7 +34,7 @@ npm run docs:preview  # посмотреть прод-сборку
 ## Деплой
 
 Сайт живёт на сервере projects: nginx в контейнере `lazyvimx-site`, домен
-и TLS держит общий Caddy из aimuzov-projects/server-infra. При пуше в `main`
+и TLS держит общий Caddy из aimuzov-projects/infra-server. При пуше в `main`
 GitHub Actions заходит на сервер по SSH, а там ключ привязан к
 `deploy/remote.sh`: он подтягивает `main` и пересобирает образ. После правки
 доков в lazyvimx пересборка запускается кнопкой Run workflow.
