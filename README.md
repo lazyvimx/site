@@ -25,5 +25,9 @@ how CI works.
 
 ## Deploy
 
-GitHub Actions builds the site and publishes it to Pages on every push to
-`main`. After editing docs in lazyvimx, trigger a rebuild with Run workflow.
+The site lives on the projects server: nginx in the `lazyvimx-site`
+container, while the domain and TLS are handled by the shared Caddy from
+aimuzov-projects/server-infra. On every push to `main` GitHub Actions logs into
+the server over SSH, where the key is bound to `deploy/remote.sh`: it pulls
+`main` and rebuilds the image. After editing docs in lazyvimx, trigger a
+rebuild with Run workflow.
