@@ -1,7 +1,16 @@
+# lazyvimx-site
+
+<div align="center">
+
+[![Деплой](https://img.shields.io/github/actions/workflow/status/lazyvimx/site/deploy.yml?branch=main&style=flat-square&label=деплой)](https://github.com/lazyvimx/site/actions/workflows/deploy.yml)
+[![Сайт](https://img.shields.io/website?url=https%3A%2F%2Flazyvimx.aimuzov.online&style=flat-square&label=сайт)](https://lazyvimx.aimuzov.online/)
+![VitePress](https://img.shields.io/github/package-json/dependency-version/lazyvimx/site/dev/vitepress?style=flat-square)
+[![lazyvimx](https://img.shields.io/github/v/release/lazyvimx/nvim?style=flat-square&label=lazyvimx)](https://github.com/lazyvimx/nvim/releases)
+
+</div>
+
 > [!TIP]
 > **🇬🇧 English version:** [README.md](README.md)
-
-# lazyvimx-site
 
 Сайт документации [lazyvimx](https://github.com/lazyvimx/nvim) на
 [VitePress](https://vitepress.dev).
