@@ -36,7 +36,7 @@ how CI works.
 
 The site lives on the projects server: nginx in the `lazyvimx-site`
 container, while the domain and TLS are handled by the shared Caddy from
-aimuzov-projects/server-infra. On every push to `main` GitHub Actions logs into
+aimuzov-projects/infra-server. On every push to `main` GitHub Actions logs into
 the server over SSH, where the key is bound to `deploy/remote.sh`: it pulls
 `main` and rebuilds the image. After editing docs in lazyvimx, trigger a
 rebuild with Run workflow.
