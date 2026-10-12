@@ -1,25 +1,29 @@
+> [!TIP]
+> **🇷🇺 Русская версия:** [README.ru.md](README.ru.md)
+
 # lazyvimx-site
 
-Сайт документации [lazyvimx](https://github.com/lazyvimx/nvim) на
+Documentation site for [lazyvimx](https://github.com/lazyvimx/nvim), built with
 [VitePress](https://vitepress.dev).
 
-Тексты страниц живут в репозитории lazyvimx (`docs/*.md`, `README*.md`) —
-здесь только оболочка: конфиг, лендинги двух локалей и синк-скрипт.
-Править контент нужно там; `scripts/sync-docs.mjs` подтягивает его при
-каждой сборке.
+Page content lives in the lazyvimx repository (`docs/*.md`, `README*.md`) —
+this repo is only the shell: config, landing pages for both locales and the
+sync script. Edit the content there; `scripts/sync-docs.mjs` pulls it in on
+every build.
 
-## Команды
+## Commands
 
 ```sh
-npm run docs:dev      # синк + дев-сервер
-npm run docs:build    # синк + прод-сборка в .vitepress/dist
-npm run docs:preview  # посмотреть прод-сборку
+npm run docs:dev      # sync + dev server
+npm run docs:build    # sync + production build into .vitepress/dist
+npm run docs:preview  # preview the production build
 ```
 
-Синк берёт соседнюю рабочую копию `../lazyvimx` (или путь из
-`LAZYVIMX_DIR`), а без неё клонирует репозиторий с GitHub — так работает CI.
+The sync uses the sibling checkout `../nvim` (or the path from
+`LAZYVIMX_DIR`), and without it clones the repository from GitHub — that's
+how CI works.
 
-## Деплой
+## Deploy
 
-GitHub Actions собирает и выкладывает сайт на Pages при пуше в `main`.
-После правки доков в lazyvimx пересборка запускается кнопкой Run workflow.
+GitHub Actions builds the site and publishes it to Pages on every push to
+`main`. After editing docs in lazyvimx, trigger a rebuild with Run workflow.
