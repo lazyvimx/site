@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/lazyvimx/site/compare/v1.1.1...v1.2.0) (2026-10-15)
+
+
+### Features
+
+* take the docs from lazyvimx/nvim main ([d7dc6c0](https://github.com/lazyvimx/site/commit/d7dc6c0df671d191845146b9c06e5de73d9a5e3d))
+* take the docs from lazyvimx/nvim main ([0e7f8cd](https://github.com/lazyvimx/site/commit/0e7f8cd92c1580e3bd842ec8eb921b944a5df0e9))
+
 ## [1.1.1](https://github.com/lazyvimx/site/compare/v1.1.0...v1.1.1) (2026-10-15)
 
 
