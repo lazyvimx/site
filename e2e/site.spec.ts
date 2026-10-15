@@ -41,6 +41,13 @@ test('a demo slot turns into a video', async ({ page }) => {
 	await expect(slot.locator('video')).toHaveCount(1)
 })
 
+test('an extra with a recorded "before" gets the Before / After tabs', async ({ page }) => {
+	await page.goto('/extras')
+
+	await expect(page.locator('.demo-slot[data-demo="ui-better-colorcolumn"] .demo-player__tab')).toHaveCount(2)
+	await expect(page.locator('.demo-slot[data-before]')).toHaveCount(27)
+})
+
 test('the statusline shows the lazyvimx version and the current file', async ({ page }) => {
 	await page.goto('/faq')
 

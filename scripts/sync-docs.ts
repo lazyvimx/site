@@ -30,12 +30,41 @@ function findSource() {
 const src = findSource()
 const read = (path: string) => (existsSync(join(src, path)) ? readFileSync(join(src, path), 'utf8') : undefined)
 
-// Вариант "до" есть у тех экстр, для которых записан свой тейп в tapes-before.
+// Экстры, у которых записан "до"-вариант. По папке tapes-before его не узнать:
+// она в .gitignore и генерируется почти для всех тейпов, а записаны не все.
+// Список повторяет записи в ветке assets lazyvimx/nvim, при дозаписи пополнять оба места.
+const withBefore = new Set([
+	'buf-tab-scope',
+	'coding-comments',
+	'git-conflicts',
+	'motions-better-cursor-move',
+	'motions-better-move-between-words',
+	'motions-langmapper',
+	'motions-sibling-move',
+	'motions-sibling-swap',
+	'motions-splitting-joining-blocks',
+	'ui-better-colorcolumn',
+	'ui-better-cursorline',
+	'ui-better-diagnostic',
+	'ui-better-float',
+	'ui-better-insert-mode',
+	'ui-better-linenumbers',
+	'ui-better-live-rename',
+	'ui-better-reference-highlight',
+	'ui-better-whitespace',
+	'ui-bolder-separators',
+	'ui-diff-view',
+	'ui-highlighted-ansi-escape',
+	'ui-highlighted-colors',
+	'ui-peek-preview',
+	'ui-scrollbar',
+	'ui-simple-mode',
+	'ui-symbol-usage',
+	'ui-winbar',
+])
+
 function demo(name: string) {
-	return {
-		...tapeSize(read(`docs/demo/tapes/${name}.tape`)),
-		before: existsSync(join(src, `docs/demo/tapes-before/${name}-before.tape`)),
-	}
+	return { ...tapeSize(read(`docs/demo/tapes/${name}.tape`)), before: withBefore.has(name) }
 }
 
 rmSync(out, { recursive: true, force: true })
