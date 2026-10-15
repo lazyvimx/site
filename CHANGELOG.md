@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/lazyvimx/site/compare/v1.1.0...v1.1.1) (2026-10-15)
+
+
+### Bug Fixes
+
+* bring back the Before / After tabs on the demos ([cbc2b1b](https://github.com/lazyvimx/site/commit/cbc2b1b90699f020490ce5f331bc03e54fc5487f))
+* bring back the Before / After tabs on the demos ([bd93cba](https://github.com/lazyvimx/site/commit/bd93cba094a1cb05b42c3d7c4370ffa5649ab64a))
+
 ## [1.1.0](https://github.com/lazyvimx/site/compare/v1.0.0...v1.1.0) (2026-10-15)
 
 
