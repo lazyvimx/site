@@ -1,0 +1,299 @@
+/* Текст документации из markdown. Разметку пишет не сайт, а sync-docs и Sätteri,
+   классов в ней нет, поэтому здесь селекторы по тегам внутри `.doc`.
+   Основа -- правила VitePress, поверх них сетка терминала: строка 28px, отступы
+   кратны её половине, как строки в буфере. */
+
+.doc {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		position: relative;
+		font-weight: 600;
+		outline: none;
+	}
+
+	h1 {
+		margin: 0 0 14px;
+		font-size: 28px;
+		line-height: 42px;
+		letter-spacing: -0.02em;
+	}
+
+	h2 {
+		margin: 42px 0 14px;
+		padding-top: 14px;
+		border-top: 1px solid var(--divider);
+		font-size: 24px;
+		line-height: 42px;
+		letter-spacing: -0.02em;
+	}
+
+	h3,
+	h4 {
+		margin: 28px 0 14px;
+		line-height: 28px;
+		letter-spacing: -0.01em;
+	}
+
+	h3 {
+		font-size: 20px;
+	}
+
+	h4 {
+		font-size: 18px;
+	}
+
+	/* Значок якоря слева от заголовка, виден при наведении. Текста у ссылки нет,
+	   чтобы он не попадал в оглавление и поиск. */
+	.header-anchor {
+		user-select: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		margin-left: -0.87em;
+		font-weight: 500;
+		color: var(--brand);
+		text-decoration: none;
+		opacity: 0;
+		transition: opacity 0.25s;
+
+		&::before {
+			content: '#';
+		}
+
+		&:focus {
+			opacity: 1;
+		}
+	}
+
+	h2 .header-anchor {
+		top: 14px;
+	}
+
+	:is(h1, h2, h3, h4, h5, h6):hover .header-anchor {
+		opacity: 1;
+	}
+
+	p,
+	li,
+	td,
+	th {
+		line-height: 28px;
+	}
+
+	p,
+	ul,
+	ol,
+	blockquote,
+	table,
+	hr,
+	.code-block {
+		margin: 14px 0;
+	}
+
+	blockquote {
+		padding-left: 16px;
+		border-left: 2px solid var(--divider);
+		color: var(--text-2);
+
+		& > p {
+			margin: 0;
+		}
+	}
+
+	a {
+		font-weight: 500;
+		color: var(--brand);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		transition: color 0.25s;
+
+		&:hover {
+			color: var(--brand-hover);
+		}
+	}
+
+	/* Внешняя ссылка помечена стрелкой, как externalLinkIcon у VitePress. */
+	a[target='_blank']:not(:has(img))::after {
+		content: '↗';
+		display: inline-block;
+		margin-left: 2px;
+		font-size: 0.75em;
+		text-decoration: none;
+		vertical-align: top;
+	}
+
+	strong {
+		font-weight: 600;
+	}
+
+	ul,
+	ol {
+		padding-left: 1.25rem;
+	}
+
+	ul {
+		list-style: disc;
+	}
+
+	ol {
+		list-style: decimal;
+	}
+
+	li + li,
+	li > ul,
+	li > ol {
+		margin-top: 0;
+	}
+
+	li > ul,
+	li > ol {
+		margin-bottom: 0;
+	}
+
+	table {
+		overflow-x: auto;
+		display: block;
+		border-collapse: collapse;
+	}
+
+	tr {
+		border-top: 1px solid var(--divider);
+		background-color: var(--bg);
+
+		&:nth-child(2n) {
+			background-color: var(--bg-soft);
+		}
+	}
+
+	th,
+	td {
+		padding: 8px 16px;
+		border: 1px solid var(--divider);
+		font-size: 14px;
+	}
+
+	th {
+		font-weight: 600;
+		color: var(--text-2);
+		text-align: left;
+		background-color: var(--bg-soft);
+	}
+
+	hr {
+		border: none;
+		border-top: 1px solid var(--divider);
+	}
+
+	img {
+		max-width: 100%;
+	}
+
+	/* Инлайн-код. Сочетание клавиш -- единый токен: перенос посреди <C-A-h> читается
+	   как две разные комбинации. Токен длиннее колонки (путь плагина, импорт экстры)
+	   при этом не тянет страницу вширь, а прокручивается сам, как блок кода.
+	   Высоту держим в строку сетки: 22 + 3 + 3 дают те же 28, что и абзац. */
+	:not(pre) > code {
+		overflow-x: auto;
+		display: inline-block;
+		max-width: 100%;
+		padding: 3px 6px;
+		font-size: 0.875em;
+		line-height: 22px;
+		color: var(--code-color);
+		white-space: nowrap;
+		vertical-align: middle;
+		background-color: var(--code-bg);
+	}
+
+	:is(h1, h2, h3, h4) > code {
+		font-size: 0.9em;
+	}
+
+	/* Плашка во всю колонку сталкивает значок внешней ссылки на строку ниже,
+	   и он остаётся там один. Держим их вместе, место под значок забирает код. */
+	a:has(> code) {
+		display: inline-flex;
+		align-items: baseline;
+		max-width: 100%;
+	}
+
+	a > code {
+		min-width: 0;
+	}
+}
+
+/* Блок кода в рамке из doc-plugin.ts: язык в углу и кнопка копирования. */
+.code-block {
+	position: relative;
+	margin-inline: -24px;
+	background-color: var(--code-block-bg);
+
+	@media (--sm) {
+		margin-inline: 0;
+	}
+
+	&__lang {
+		user-select: none;
+		position: absolute;
+		z-index: 2;
+		top: 2px;
+		right: 8px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-3);
+		transition: opacity 0.4s;
+	}
+
+	&__copy {
+		position: absolute;
+		z-index: 3;
+		top: 12px;
+		right: 12px;
+		width: 40px;
+		height: 40px;
+		border: 1px solid var(--divider);
+		color: var(--text-2);
+		opacity: 0;
+		background-color: var(--code-block-bg);
+		transition: opacity 0.25s;
+
+		&::before {
+			content: '⧉';
+			font-size: 18px;
+		}
+
+		&:focus,
+		&--copied {
+			opacity: 1;
+		}
+
+		&--copied::before {
+			content: '✓';
+		}
+	}
+
+	&:hover &__copy {
+		opacity: 1;
+	}
+
+	&:hover &__lang {
+		opacity: 0;
+	}
+
+	.astro-code {
+		margin: 0;
+		padding: 20px 24px;
+		font-size: 0.875em;
+		line-height: 1.7;
+		tab-size: 4;
+		background-color: transparent !important;
+
+		& span {
+			color: light-dark(var(--shiki-light), var(--shiki-dark));
+		}
+	}
+}

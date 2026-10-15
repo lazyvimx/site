@@ -1,28 +1,12 @@
 node_modules/
+dist/
+.astro/
 .cache/
-.vitepress/cache/
-.vitepress/dist/
-
-# Эти страницы генерирует scripts/sync-docs.mjs из репозитория lazyvimx.
-/getting-started.md
-/extras.md
-/configuration.md
-/keybindings.md
-/faq.md
-/troubleshooting.md
-/architecture.md
-/api.md
-/ru/getting-started.md
-/ru/extras.md
-/ru/configuration.md
-/ru/keybindings.md
-/ru/faq.md
-/ru/troubleshooting.md
-/ru/architecture.md
-/ru/api.md
-
-# Версию lazyvimx кладёт туда же sync-docs.mjs — из package.json.
-/.vitepress/theme/version.json
-
-# macOS
 .DS_Store
+.env
+test-results/
+playwright-report/
+
+# Страницы и версию раскладывает scripts/sync-docs.ts из репозитория lazyvimx/nvim.
+src/frontend/content/docs/
+src/frontend/data/version.json

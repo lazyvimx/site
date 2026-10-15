@@ -1,0 +1,102 @@
+import { pageScheme, siteChecks } from '@aimuzov-projects/infra-site-kit/playwright/checks'
+import { expect, test } from '@playwright/test'
+
+// Проверки, общие для всех сайтов: страницы из sitemap, axe в обеих темах,
+// переключатель темы с подглядыванием и ленивая Метрика.
+siteChecks({
+	metrika: true,
+	theme: { button: (page) => page.locator('body > .nav-bar .theme-toggle'), path: '/extras' },
+})
+
+// Записи демо грузятся с CDN, а тестам нужна только разметка вокруг них.
+test.beforeEach(async ({ page }) => {
+	await page.route(/jsdelivr\.net/, (route) => route.fulfill({ status: 204 }))
+})
+
+test('the Russian page links to its English twin and back', async ({ page }) => {
+	await page.goto('/ru/extras')
+
+	await expect(page.locator('html')).toHaveAttribute('lang', 'ru')
+
+	await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+		'href',
+		'https://lazyvimx.aimuzov.online/extras',
+	)
+
+	await expect(page.locator('.nav-bar__lang')).toHaveAttribute('href', '/extras')
+})
+
+test('old VitePress anchors still lead to their sections', async ({ page }) => {
+	await page.goto('/extras#ui-better-colorcolumn')
+
+	await expect(page.locator('h3#ui-better-colorcolumn')).toBeInViewport()
+})
+
+test('a demo slot turns into a video', async ({ page }) => {
+	await page.goto('/extras')
+
+	const slot = page.locator('.demo-slot').first()
+
+	await slot.scrollIntoViewIfNeeded()
+	await expect(slot.locator('video')).toHaveCount(1)
+})
+
+test('the statusline shows the lazyvimx version and the current file', async ({ page }) => {
+	await page.goto('/faq')
+
+	await expect(page.locator('.statusline__section--version')).toHaveText(/v\d+\.\d+\.\d+/)
+	await expect(page.locator('.statusline__file')).toHaveText('~/lazyvimx/faq.md')
+})
+
+test.describe('vim keys', () => {
+	test('j scrolls and G jumps to the bottom', async ({ page }) => {
+		await page.goto('/extras')
+		await page.keyboard.press('j')
+		await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(0)
+
+		await page.keyboard.press('Shift+G')
+		await expect(page.locator('.statusline__section--percent')).toHaveText('Bot')
+	})
+
+	test('L opens the next page', async ({ page }) => {
+		await page.goto('/getting-started')
+		await page.keyboard.press('Shift+L')
+		await expect(page).toHaveURL(/\/extras$/)
+	})
+
+	test(':set bg=dark switches the theme', async ({ page }) => {
+		await page.emulateMedia({ colorScheme: 'light' })
+		await page.goto('/faq')
+		await page.keyboard.press('Shift+Semicolon')
+		await page.keyboard.type('set bg=dark')
+		await page.keyboard.press('Enter')
+
+		expect(await pageScheme(page)).toBe('dark')
+	})
+
+	test('the Russian layout keys work too', async ({ page }) => {
+		await page.goto('/ru/faq')
+		// В ЙЦУКЕН на месте j лежит "о". Раскладку Playwright не эмулирует,
+		// поэтому нажатие собираем сами: символ раскладки и код клавиши.
+		await page.evaluate(() => dispatchEvent(new KeyboardEvent('keydown', { key: 'о', code: 'KeyJ' })))
+		await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(0)
+	})
+})
+
+test.describe('search', () => {
+	for (const [path, query, title] of [
+		['/extras', 'scrollbar', /ui\.scrollbar/],
+		['/ru/extras', 'scrollbar', /экстр.*ui\.scrollbar/i],
+	] as const) {
+		test(`finds pages from ${path}`, async ({ page }) => {
+			await page.goto(path)
+			await page.keyboard.press('/')
+
+			const input = page.locator('.search__input')
+
+			await expect(input).toBeFocused()
+			await input.fill(query)
+			await expect(page.locator('.search__hit').first()).toContainText(title)
+		})
+	}
+})

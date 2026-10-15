@@ -1,0 +1,97 @@
+---
+import '@fontsource-variable/jetbrains-mono/wght.css'
+import '@fontsource-variable/jetbrains-mono/wght-italic.css'
+import fontLatin from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url'
+import Metrika from '@aimuzov-projects/infra-site-kit/metrika.astro'
+import MetrikaPixel from '@aimuzov-projects/infra-site-kit/metrika-pixel.astro'
+
+import VimShell from '#frontend/components/vim/vim-shell.svelte'
+import { navPages } from '#frontend/data/nav.ts'
+import { site } from '#frontend/data/site.ts'
+import { ui } from '#frontend/data/ui.ts'
+import version from '#frontend/data/version.json'
+import { alternatePath, type Lang, langOf, langs, pagePath, slugOf } from '#frontend/lib/i18n.ts'
+import { pageTitle } from '#frontend/lib/title.ts'
+import '#frontend/styles/global.css'
+
+type Props = {
+	/** Название страницы, к нему добавится название сайта. У главной не задаётся. */
+	title?: string
+	/** `meta description` и `og:description`, по умолчанию описание сайта на языке страницы. */
+	description?: string
+	/** `false` у служебных страниц вроде 404: без canonical и с запретом индексации. */
+	index?: boolean
+}
+
+const path = Astro.url.pathname.replace(/\.html$/, '')
+const lang: Lang = langOf(path)
+const t = ui[lang]
+const { title, description = t.description, index = true } = Astro.props
+const fullTitle = pageTitle(title)
+const url = (to: string) => new URL(to, Astro.site).href
+const canonical = url(path)
+const image = url('/og.png')
+const other: Lang = lang === 'en' ? 'ru' : 'en'
+const slug = slugOf(path)
+
+const pages = navPages.map((page) => ({ slug: page.slug, text: page.text[lang], link: pagePath(lang, page.slug) }))
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{fullTitle}</title>
+		<meta name="description" content={description} />
+		{index ? (
+			<>
+				<link rel="canonical" href={canonical} />
+				{langs.map((to) => (
+					<link rel="alternate" hreflang={to} href={url(alternatePath(path, to))} />
+				))}
+				<link rel="alternate" hreflang="x-default" href={url(alternatePath(path, 'en'))} />
+			</>
+		) : (
+			<meta name="robots" content="noindex" />
+		)}
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={site.name} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:title" content={title ?? site.name} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={image} />
+		<meta property="og:locale" content={t.locale} />
+		<meta property="og:locale:alternate" content={ui[other].locale} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title ?? site.name} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<!-- Весь сайт набран JetBrains Mono, как код в самом Neovim. Предзагружаем только
+		     латиницу: ею набрано почти всё. -->
+		<link rel="preload" as="font" type="font/woff2" href={fontLatin} crossorigin />
+		<script is:inline src="/theme.js"></script>
+		<Metrika id={site.metrikaId} init={{ webvisor: true }} />
+		<slot name="head" />
+	</head>
+	<body>
+		<MetrikaPixel id={site.metrikaId} />
+		<a class="skip-link" href="#content">
+			{t.skip}
+		</a>
+		<slot />
+		<VimShell
+			client:load
+			{lang}
+			{slug}
+			{pages}
+			home={pagePath(lang)}
+			alternate={alternatePath(path, other)}
+			version={version.version}
+			github={site.github}
+			author={site.author}
+		/>
+	</body>
+</html>

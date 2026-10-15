@@ -1,0 +1,142 @@
+---
+import { nav } from '#frontend/data/nav.ts'
+import { ui } from '#frontend/data/ui.ts'
+import { type Lang, pagePath } from '#frontend/lib/i18n.ts'
+
+type Props = { lang: Lang; slug: string }
+
+const { lang, slug } = Astro.props
+---
+
+<!-- Дерево файлов как в neo-tree: группы -- раскрытые папки, страницы -- файлы
+     на направляющей линии. На широком экране панель стоит слева всегда, на узком
+     выезжает по кнопке "Меню" как popover. -->
+<nav class="sidebar" id="sidebar" popover aria-label={ui[lang].docsNav}>
+	{nav.map((group) => (
+		<section class="sidebar__group">
+			<h2 class="sidebar__folder">📁 {group.text[lang]}</h2>
+			<ul class="sidebar__files">
+				{group.items.map((item) => (
+					<li class:list={['sidebar__file', { 'sidebar__file--active': item.slug === slug }]}>
+						<a
+							class="sidebar__link"
+							href={pagePath(lang, item.slug)}
+							aria-current={item.slug === slug ? 'page' : undefined}
+						>
+							{item.icon} {item.text[lang]}
+						</a>
+					</li>
+				))}
+			</ul>
+		</section>
+	))}
+</nav>
+
+<style>
+	.sidebar {
+		position: fixed;
+		inset: 0 auto 0 0;
+		overflow-y: auto;
+		width: min(320px, calc(100vw - 64px));
+		height: 100dvh;
+		max-height: none;
+		margin: 0;
+		padding: 0 32px 96px;
+		border: 0;
+		color: var(--text-1);
+		background-color: var(--sidebar-bg);
+
+		/* На ноутбуке и шире панель не popover, а колонка под шапкой. */
+		@media (--desktop) {
+			z-index: 20;
+			top: 0;
+			display: block;
+			width: var(--sidebar-width);
+			padding-top: var(--nav-height);
+		}
+
+		&::backdrop {
+			background: rgb(0 0 0 / 60%);
+		}
+
+		&__group {
+			padding-top: 24px;
+		}
+
+		&__folder {
+			margin: 0;
+			padding: 4px 0;
+			font-size: 14px;
+			font-weight: 700;
+			line-height: 24px;
+		}
+
+		&__files {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		/* Ветвление рисуют бордеры, а не символы: соседние пункты стыкуются
+		   в сплошную линию при любой высоте строки. */
+		&__file {
+			position: relative;
+			padding-left: 24px;
+
+			&::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 8px;
+				border-left: 1px solid var(--divider);
+			}
+
+			&::after {
+				content: '';
+				position: absolute;
+				top: 50%;
+				left: 8px;
+				width: 10px;
+				border-top: 1px solid var(--divider);
+			}
+
+			/* Последний файл в папке обрывает линию на своём уровне. */
+			&:last-child::before {
+				bottom: 50%;
+			}
+
+			/* Активный файл -- cursorline на всю ширину панели. */
+			&--active {
+				margin-right: -32px;
+				padding-right: 32px;
+				background: var(--cursorline);
+			}
+		}
+
+		&__link {
+			overflow: hidden;
+			display: block;
+			padding: 4px 0;
+			font-size: 14px;
+			font-weight: 500;
+			line-height: 24px;
+			color: var(--text-2);
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			transition: color 0.25s;
+
+			&:hover,
+			&[aria-current='page'] {
+				color: var(--brand);
+			}
+
+			/* Расширение приглушено, имя файла читается первым. Оно декоративное,
+			   поэтому живёт в CSS: скринридеру ".md" после каждой страницы ни к чему. */
+			&::after {
+				content: '.md';
+				color: var(--vim-dim);
+			}
+		}
+	}
+</style>

@@ -1,0 +1,11 @@
+---
+import Home from '#frontend/components/home.astro'
+import { home } from '#frontend/data/home.ts'
+import Base from '#frontend/layouts/base.astro'
+import HeroPreload from '#frontend/components/hero-preload.astro'
+---
+
+<Base description={home.en.description}>
+	<HeroPreload slot="head" />
+	<Home lang="en" />
+</Base>

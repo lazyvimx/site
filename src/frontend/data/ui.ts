@@ -1,0 +1,58 @@
+import type { Lang } from '#frontend/lib/i18n.ts'
+
+/** Подписи интерфейса на обоих языках, тексты документации сюда не входят. */
+export const ui = {
+	en: {
+		description: 'An enhancement layer on top of LazyVim: 50 optional extras and 39 plugin overrides',
+		locale: 'en_US',
+		langName: 'English',
+		search: 'Search',
+		searchPlaceholder: 'Search docs',
+		searchEmpty: 'No results for',
+		searchDev: 'Search works in the built site: npm run build && npm run preview',
+		searchSelect: 'to select',
+		searchNavigate: 'to navigate',
+		searchClose: 'to close',
+		menu: 'Menu',
+		outline: 'On this page',
+		top: 'Return to top',
+		prev: 'Previous page',
+		next: 'Next page',
+		theme: 'Toggle dark mode',
+		lang: 'Change language',
+		mainNav: 'Main navigation',
+		docsNav: 'Documentation',
+		skip: 'Skip to content',
+		notFound: 'Page not found',
+		notFoundText:
+			"But if you don't change your direction, and if you keep looking, you may end up where you are heading.",
+		home: 'Take me home',
+	},
+	ru: {
+		description: 'Слой улучшений поверх LazyVim: 50 опциональных экстр и 39 оверрайдов плагинов',
+		locale: 'ru_RU',
+		langName: 'Русский',
+		search: 'Поиск',
+		searchPlaceholder: 'Поиск по документации',
+		searchEmpty: 'Ничего не нашлось по запросу',
+		searchDev: 'Поиск работает в собранном сайте: npm run build && npm run preview',
+		searchSelect: 'выбрать',
+		searchNavigate: 'перейти',
+		searchClose: 'закрыть',
+		menu: 'Меню',
+		outline: 'На этой странице',
+		top: 'Наверх',
+		prev: 'Предыдущая',
+		next: 'Следующая',
+		theme: 'Тема',
+		lang: 'Сменить язык',
+		mainNav: 'Основная навигация',
+		docsNav: 'Документация',
+		skip: 'Перейти к содержимому',
+		notFound: 'Страница не найдена',
+		notFoundText: 'Возможно, ссылка устарела или в ней опечатка.',
+		home: 'На главную',
+	},
+} satisfies Record<Lang, Record<string, string>>
+
+export type Ui = (typeof ui)['en']

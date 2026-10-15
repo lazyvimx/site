@@ -1,24 +1,31 @@
-# Сайт на сервере projects. Порты 80/443 держит общий Caddy из aimuzov-projects/infra-server,
-# он проксирует домен сюда по сети edge.
+# Сайт на сервере проектов. Порты 80/443 занимает общий Caddy
+# из aimuzov-projects/infra-server, он проксирует сюда домен через сеть `edge`.
 
 name: lazyvimx-site
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: '5m'
+    max-file: '2'
 
 services:
   site:
     build:
       context: ..
-      args:
-        DOCS_REV: ${DOCS_REV:-}
+      dockerfile: deploy/frontend.Dockerfile
+      secrets: [env]
     image: lazyvimx-site
     container_name: lazyvimx-site
     restart: unless-stopped
     networks:
       - edge
-    logging:
-      driver: json-file
-      options:
-        max-size: '5m'
-        max-file: '2'
+    logging: *logging
+
+# Переменные сборки лежат в `/srv/lazyvimx-site/.env`, образец -- `.env.example`.
+secrets:
+  env:
+    file: ../.env
 
 networks:
   edge:

@@ -1,0 +1,22 @@
+---
+import { demoBase } from '#frontend/lib/demo-base.ts'
+---
+
+<!-- Постер hero -- самый крупный элемент первого экрана, а браузер добирается до него
+     только через скрипт. Палитру отбираем через media, чтобы качать один файл, а не оба. -->
+<link
+	rel="preload"
+	as="image"
+	type="image/webp"
+	fetchpriority="high"
+	href={`${demoBase}/hero-poster.webp`}
+	media="(prefers-color-scheme: dark)"
+/>
+<link
+	rel="preload"
+	as="image"
+	type="image/webp"
+	fetchpriority="high"
+	href={`${demoBase}/hero-light-poster.webp`}
+	media="(prefers-color-scheme: light)"
+/>

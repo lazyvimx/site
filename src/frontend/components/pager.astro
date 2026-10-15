@@ -1,0 +1,75 @@
+---
+import { navPages } from '#frontend/data/nav.ts'
+import { ui } from '#frontend/data/ui.ts'
+import { type Lang, pagePath } from '#frontend/lib/i18n.ts'
+
+type Props = { lang: Lang; slug: string }
+
+const { lang, slug } = Astro.props
+const index = navPages.findIndex((page) => page.slug === slug)
+const prev = index > 0 ? navPages[index - 1] : undefined
+const next = index >= 0 ? navPages[index + 1] : undefined
+const t = ui[lang]
+---
+
+<nav class="pager" aria-label={`${t.prev} / ${t.next}`}>
+	{prev && (
+		<a class="pager__link" href={pagePath(lang, prev.slug)} rel="prev">
+			<span class="pager__desc">{t.prev}</span>
+			<span class="pager__title">{prev.text[lang]}</span>
+		</a>
+	)}
+	{next && (
+		<a class="pager__link pager__link--next" href={pagePath(lang, next.slug)} rel="next">
+			<span class="pager__desc">{t.next}</span>
+			<span class="pager__title">{next.text[lang]}</span>
+		</a>
+	)}
+</nav>
+
+<style>
+	.pager {
+		display: grid;
+		gap: 16px;
+		margin-top: 64px;
+		padding: 24px 0 34px;
+		border-top: 1px solid var(--divider);
+
+		@media (--sm) {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		&__link {
+			display: block;
+			padding: 11px 16px 13px;
+			border: 1px solid var(--divider);
+			background: var(--bg-soft);
+			transition: border-color 0.25s;
+
+			&:hover {
+				border-color: var(--brand);
+			}
+
+			&--next {
+				grid-column: -2;
+				text-align: right;
+			}
+		}
+
+		&__desc {
+			display: block;
+			font-size: 12px;
+			font-weight: 500;
+			line-height: 20px;
+			color: var(--text-2);
+		}
+
+		&__title {
+			display: block;
+			font-size: 14px;
+			font-weight: 500;
+			line-height: 20px;
+			color: var(--brand);
+		}
+	}
+</style>
