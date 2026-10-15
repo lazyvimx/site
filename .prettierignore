@@ -1,0 +1,12 @@
+dist
+.astro
+node_modules
+package-lock.json
+CHANGELOG.md
+.claude
+.serena
+test-results
+playwright-report
+.cache
+src/frontend/content/docs
+src/frontend/data/version.json
