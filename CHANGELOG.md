@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/lazyvimx/site/compare/v1.2.0...v1.2.1) (2026-10-15)
+
+
+### Bug Fixes
+
+* **deps:** update astro, JetBrains Mono, oxlint and prettier ([bb9e0b8](https://github.com/lazyvimx/site/commit/bb9e0b8ffc65cd9d4ab31c6ff354dc4e04381d25))
+* **deps:** update astro, JetBrains Mono, oxlint and prettier ([b44a227](https://github.com/lazyvimx/site/commit/b44a2276dfe10ca575872c57b40e6ef541b689ab))
+
 ## [1.2.0](https://github.com/lazyvimx/site/compare/v1.1.1...v1.2.0) (2026-10-15)
 
 
