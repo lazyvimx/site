@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/lazyvimx/site/compare/v1.2.1...v1.2.2) (2026-10-15)
+
+
+### Bug Fixes
+
+* count 51 extras and 40 overrides on the landing ([ddd7e27](https://github.com/lazyvimx/site/commit/ddd7e278637b12e783e18855bc4e92bb8fb73a5d))
+* count 51 extras and 40 overrides on the landing ([407b96c](https://github.com/lazyvimx/site/commit/407b96c4fed4262ef9c6972390173f4d72aa0fe2))
+
 ## [1.2.1](https://github.com/lazyvimx/site/compare/v1.2.0...v1.2.1) (2026-10-15)
 
 
