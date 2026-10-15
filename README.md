@@ -40,11 +40,11 @@
 
 ## How it works
 
-- [`scripts/sync-docs.ts`](scripts/sync-docs.ts) takes the docs from `../nvim`, from `LAZYVIMX_DIR` or from a fresh clone of the `develop` branch and writes them to `src/frontend/content/docs/{en,ru}`. The lazyvimx version for the statusline goes to `src/frontend/data/version.json`. Both are generated and ignored by git; `dev`, `build` and `check` run the sync themselves.
+- [`scripts/sync-docs.ts`](scripts/sync-docs.ts) takes the docs from `../nvim`, from `LAZYVIMX_DIR` or from a fresh clone of the `main` branch and writes them to `src/frontend/content/docs/{en,ru}`. The lazyvimx version for the statusline goes to `src/frontend/data/version.json`. Both are generated and ignored by git; `dev`, `build` and `check` run the sync themselves.
 - [`src/sync`](src/sync): pure text transforms of the docs and a Sätteri plugin for headings, code blocks and external links. Heading slugs follow VitePress, so links from the old site keep working.
 - [`src/frontend`](src/frontend): the site itself, the `srcDir` in `astro.config.mjs`. Imports go through `#frontend/*`.
 
-Everything about the server lives in [`deploy`](deploy): Dockerfile, compose and nginx. The image pulls the docs from `lazyvimx/nvim@develop` on every build, so fresh docs don't need a site release.
+Everything about the server lives in [`deploy`](deploy): Dockerfile, compose and nginx. The image pulls the docs from `lazyvimx/nvim@main` on every build, so fresh docs don't need a site release.
 
 ## Running
 

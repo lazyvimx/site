@@ -21,8 +21,7 @@ function findSource() {
 
 	rmSync(cache, { recursive: true, force: true })
 	mkdirSync(dirname(cache), { recursive: true })
-	// Актуальные доки живут в develop: main отстаёт до ближайшего релиза.
-	execFileSync('git', ['clone', '--depth', '1', '--branch', 'develop', `${github}.git`, cache], { stdio: 'inherit' })
+	execFileSync('git', ['clone', '--depth', '1', '--branch', 'main', `${github}.git`, cache], { stdio: 'inherit' })
 
 	return cache
 }

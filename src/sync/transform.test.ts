@@ -20,6 +20,17 @@ test('the README banner and badges are dropped', () => {
 	assert.equal(en(text), 'Body\n')
 })
 
+test('the HTML header of the README is dropped up to the first markdown', () => {
+	const text = [
+		'<p align="center">\n\t<img src="lang.svg" alt="English">\n</p>',
+		'<p align="center">\n\t<a href="/"><img src="banner.jpg" alt="b"></a>\n</p>',
+		'<h3 align="center">Tagline</h3>\n<p align="center">Docs at <a href="/">site</a></p>',
+		'**Body** with <p>inline html</p> later.\n',
+	].join('\n\n')
+
+	assert.equal(en(text), '**Body** with <p>inline html</p> later.\n')
+})
+
 test('links between the docs point at site pages of the same locale', () => {
 	assert.equal(
 		en('[a](./CONFIGURATION.md#setup) [b](../README.md)'),
@@ -45,10 +56,10 @@ test('repository-only paths go to GitHub', () => {
 	assert.equal(en('[d](./)'), `[d](${github}/tree/main/docs)`)
 })
 
-test('an extra import links to its source on develop', () => {
+test('an extra import links to its source on main', () => {
 	assert.equal(
 		en('**Import:** `lazyvimx.extras.ui.better-float`'),
-		`**Import:** [\`lazyvimx.extras.ui.better-float\`](${github}/blob/develop/lua/lazyvimx/extras/ui/better-float.lua)`,
+		`**Import:** [\`lazyvimx.extras.ui.better-float\`](${github}/blob/main/lua/lazyvimx/extras/ui/better-float.lua)`,
 	)
 })
 

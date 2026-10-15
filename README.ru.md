@@ -40,11 +40,11 @@
 
 ## Как устроено
 
-- [`scripts/sync-docs.ts`](scripts/sync-docs.ts) берёт доки из `../nvim`, из `LAZYVIMX_DIR` или из свежего клона ветки `develop` и пишет их в `src/frontend/content/docs/{en,ru}`. Версия lazyvimx для статуслайна уходит в `src/frontend/data/version.json`. Оба сгенерированы и в git не попадают, `dev`, `build` и `check` запускают синк сами.
+- [`scripts/sync-docs.ts`](scripts/sync-docs.ts) берёт доки из `../nvim`, из `LAZYVIMX_DIR` или из свежего клона ветки `main` и пишет их в `src/frontend/content/docs/{en,ru}`. Версия lazyvimx для статуслайна уходит в `src/frontend/data/version.json`. Оба сгенерированы и в git не попадают, `dev`, `build` и `check` запускают синк сами.
 - [`src/sync`](src/sync): чистые преобразования текста доков и плагин Sätteri для заголовков, блоков кода и внешних ссылок. Слаги заголовков — как у VitePress, так что ссылки со старого сайта не ломаются.
 - [`src/frontend`](src/frontend): сам сайт, это `srcDir` в `astro.config.mjs`. Импорты — через `#frontend/*`.
 
-Всё про сервер — в [`deploy`](deploy): Dockerfile, compose и nginx. Образ на каждой сборке берёт доки из `lazyvimx/nvim@develop`, так что свежим докам релиз сайта не нужен.
+Всё про сервер — в [`deploy`](deploy): Dockerfile, compose и nginx. Образ на каждой сборке берёт доки из `lazyvimx/nvim@main`, так что свежим докам релиз сайта не нужен.
 
 ## Запуск
 
