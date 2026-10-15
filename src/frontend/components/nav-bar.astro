@@ -1,0 +1,239 @@
+---
+import ThemeToggle from '#frontend/components/theme-toggle.svelte'
+import { site } from '#frontend/data/site.ts'
+import { ui } from '#frontend/data/ui.ts'
+import { alternatePath, type Lang, langOf, pagePath } from '#frontend/lib/i18n.ts'
+
+type Props = {
+	/** У страниц документации шапка делит строку с сайдбаром. */
+	sidebar?: boolean
+}
+
+const { sidebar = false } = Astro.props
+const path = Astro.url.pathname.replace(/\.html$/, '')
+const lang: Lang = langOf(path)
+const other: Lang = lang === 'en' ? 'ru' : 'en'
+const t = ui[lang]
+const alternate = alternatePath(path, other)
+---
+
+<header class:list={['nav-bar', { 'nav-bar--sidebar': sidebar }]}>
+	<a class="nav-bar__title" href={pagePath(lang)}>
+		{site.title}
+	</a>
+
+	<div class="nav-bar__actions">
+		<button class="nav-bar__search" type="button" data-search-open aria-label={t.search}>
+			<svg class="nav-bar__icon" viewBox="0 0 24 24" aria-hidden="true">
+				<circle cx="11" cy="11" r="7"></circle>
+				<path d="m20 20-3.5-3.5"></path>
+			</svg>
+			<span class="nav-bar__search-text">{t.search}</span>
+			<kbd class="nav-bar__search-key">⌘ K</kbd>
+		</button>
+
+		<div class="nav-bar__extra">
+			<a class="nav-bar__lang" href={alternate} hreflang={other} lang={other} aria-label={t.lang}>
+				<svg class="nav-bar__icon" viewBox="0 0 24 24" aria-hidden="true">
+					<path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"></path>
+				</svg>
+				{ui[other].langName}
+			</a>
+			<span class="nav-bar__divider" aria-hidden="true"></span>
+			<ThemeToggle client:load label={t.theme} />
+			<span class="nav-bar__divider" aria-hidden="true"></span>
+			<a class="nav-bar__social" href={site.github} target="_blank" rel="noopener" aria-label="GitHub">
+				<svg class="nav-bar__icon nav-bar__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
+					<path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3"></path>
+				</svg>
+			</a>
+		</div>
+
+		<button class="nav-bar__burger" type="button" popovertarget="nav-screen" aria-label={t.menu}>
+			<svg class="nav-bar__icon" viewBox="0 0 24 24" aria-hidden="true">
+				<path d="M4 6h16M8 12h12M12 18h8"></path>
+			</svg>
+		</button>
+	</div>
+</header>
+
+<!-- Узкий экран: язык, тема и GitHub уезжают в выпадающий экран под шапкой. -->
+<div class="nav-screen" id="nav-screen" popover>
+	<a class="nav-screen__row" href={alternate} hreflang={other} lang={other}>
+		{ui[other].langName}
+	</a>
+	<div class="nav-screen__row">
+		<span>{t.theme}</span>
+		<ThemeToggle client:load label={t.theme} peek={false} />
+	</div>
+	<a class="nav-screen__row" href={site.github} target="_blank" rel="noopener">
+		GitHub ↗
+	</a>
+</div>
+
+<style>
+	.nav-bar {
+		position: fixed;
+		z-index: 30;
+		top: 0;
+		right: 0;
+		left: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: var(--nav-height);
+		padding: 0 8px 0 24px;
+		background-color: var(--nav-bg);
+
+		@media (--tablet) {
+			padding: 0 32px;
+		}
+
+		&__title {
+			display: flex;
+			align-items: center;
+			height: 100%;
+			font-weight: 600;
+			color: var(--text-1);
+			transition: opacity 0.25s;
+
+			&:hover {
+				opacity: 0.6;
+			}
+		}
+
+		/* С сайдбаром название занимает колонку дерева, как на VitePress. */
+		&--sidebar &__title {
+			@media (--desktop) {
+				width: calc(var(--sidebar-width) - 32px);
+			}
+		}
+
+		&__actions {
+			display: flex;
+			align-items: center;
+		}
+
+		&__icon {
+			width: 18px;
+			height: 18px;
+			fill: none;
+			stroke: currentcolor;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-width: 2;
+
+			&--fill {
+				fill: currentcolor;
+				stroke: none;
+			}
+		}
+
+		&__search {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			height: 40px;
+			padding: 0 8px;
+			font-size: 13px;
+			font-weight: 500;
+			color: var(--text-2);
+			transition: border-color 0.25s;
+
+			@media (--sm) {
+				margin-right: 12px;
+				padding: 0 10px 0 12px;
+				border: 1px solid var(--divider);
+				background: var(--bg);
+			}
+
+			&:hover {
+				border-color: var(--brand);
+			}
+		}
+
+		&__search-text,
+		&__search-key {
+			display: none;
+
+			@media (--sm) {
+				display: inline;
+			}
+		}
+
+		&__search-key {
+			padding: 0 6px;
+			border: 1px solid var(--divider);
+			font-family: inherit;
+			font-size: 12px;
+			line-height: 22px;
+			color: var(--text-2);
+		}
+
+		&__extra {
+			display: none;
+			align-items: center;
+
+			@media (--tablet) {
+				display: flex;
+			}
+		}
+
+		&__lang,
+		&__social {
+			display: flex;
+			gap: 6px;
+			align-items: center;
+			height: 40px;
+			padding: 0 8px;
+			font-size: 14px;
+			color: var(--text-2);
+			transition: color 0.25s;
+
+			&:hover {
+				color: var(--text-1);
+			}
+		}
+
+		&__divider {
+			width: 1px;
+			height: 24px;
+			margin: 0 8px;
+			background-color: var(--divider);
+		}
+
+		&__burger {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 48px;
+			height: var(--nav-height);
+			color: var(--text-1);
+
+			@media (--tablet) {
+				display: none;
+			}
+		}
+	}
+
+	.nav-screen {
+		position: fixed;
+		inset: var(--nav-height) 0 auto;
+		width: auto;
+		margin: 0;
+		padding: 12px 24px 24px;
+		border: 0;
+		border-bottom: 1px solid var(--divider);
+		color: var(--text-1);
+		background: var(--nav-bg);
+
+		&__row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 12px 0;
+			border-bottom: 1px solid var(--divider);
+			font-size: 14px;
+		}
+	}
+</style>

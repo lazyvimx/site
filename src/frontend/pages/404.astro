@@ -1,0 +1,80 @@
+---
+import NavBar from '#frontend/components/nav-bar.astro'
+import { ui } from '#frontend/data/ui.ts'
+import Base from '#frontend/layouts/base.astro'
+---
+
+<!-- Одна 404 на оба языка: nginx отдаёт её на любой неизвестный адрес. -->
+<Base title="404" description={ui.en.notFound} index={false}>
+	<NavBar />
+	<main class="missing" id="content">
+		<p class="missing__code">404</p>
+		<h1 class="missing__title">{ui.en.notFound}</h1>
+		<p class="missing__text" lang="ru">
+			{ui.ru.notFound}. {ui.ru.notFoundText}
+		</p>
+		<div class="missing__links">
+			<a class="missing__link" href="/">
+				{ui.en.home}
+			</a>
+			<a class="missing__link" href="/ru/" lang="ru">
+				{ui.ru.home}
+			</a>
+		</div>
+	</main>
+</Base>
+
+<style>
+	.missing {
+		display: grid;
+		place-content: center;
+		justify-items: center;
+		min-height: 100dvh;
+		padding: var(--nav-height) 24px var(--statusline-height);
+		text-align: center;
+
+		&__code {
+			margin: 0;
+			font-size: 64px;
+			font-weight: 600;
+			line-height: 64px;
+		}
+
+		&__title {
+			margin: 24px 0 0;
+			padding-top: 12px;
+			border-top: 1px solid var(--divider);
+			font-size: 20px;
+			letter-spacing: 2px;
+		}
+
+		&__text {
+			max-width: 256px;
+			margin: 24px 0 0;
+			font-size: 14px;
+			color: var(--text-2);
+		}
+
+		&__links {
+			display: flex;
+			gap: 12px;
+			margin-top: 20px;
+		}
+
+		&__link {
+			padding: 3px 16px;
+			border: 1px solid var(--brand);
+			font-size: 14px;
+			font-weight: 500;
+			color: var(--brand);
+			transition:
+				border-color 0.25s,
+				color 0.25s;
+
+			&:hover {
+				border-color: var(--brand-hover);
+				color: var(--brand-hover);
+			}
+		}
+	}
+</style>

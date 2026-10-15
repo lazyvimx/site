@@ -1,0 +1,234 @@
+---
+import type { MarkdownHeading } from 'astro'
+
+import NavBar from '#frontend/components/nav-bar.astro'
+import Pager from '#frontend/components/pager.astro'
+import Sidebar from '#frontend/components/sidebar.astro'
+import Toc from '#frontend/components/toc.astro'
+import { ui } from '#frontend/data/ui.ts'
+import type { Lang } from '#frontend/lib/i18n.ts'
+import Base from '#frontend/layouts/base.astro'
+import '#frontend/styles/prose.css'
+
+type Props = { lang: Lang; slug: string; title: string; description?: string; headings: MarkdownHeading[] }
+
+const { lang, slug, title, description, headings } = Astro.props
+const t = ui[lang]
+---
+
+<Base {title} {description}>
+	<NavBar sidebar />
+	<Sidebar {lang} {slug} />
+
+	<div class="local-nav">
+		<button class="local-nav__button" type="button" popovertarget="sidebar">
+			<svg class="local-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+				<path d="M4 6h16M4 12h10M4 18h16"></path>
+			</svg>
+			{t.menu}
+		</button>
+		<button class="local-nav__button local-nav__button--outline" type="button" popovertarget="toc-popover">
+			{t.outline} ›
+		</button>
+	</div>
+	<Toc {lang} {headings} id="toc-popover" popover />
+
+	<div class="doc-page">
+		<main class="doc-page__main" id="content">
+			<article class="doc" data-pagefind-body>
+				<slot />
+			</article>
+			<Pager {lang} {slug} />
+		</main>
+		<aside class="doc-page__aside">
+			<Toc {lang} {headings} id="toc" />
+		</aside>
+	</div>
+</Base>
+
+<script>
+	import { mount } from 'svelte'
+
+	import DemoPlayer from '#frontend/components/demo-player.svelte'
+	import { langOf } from '#frontend/lib/i18n.ts'
+
+	const lang = langOf(location.pathname)
+
+	// Слоты под записи ставит sync-docs, плеер в них монтируется уже в браузере.
+	for (const slot of document.querySelectorAll<HTMLElement>('.demo-slot')) {
+		const { demo = '', alt = '', width, height } = slot.dataset
+
+		mount(DemoPlayer, {
+			target: slot,
+			props: {
+				name: demo,
+				alt,
+				width: Number(width) || 1200,
+				height: Number(height) || 604,
+				before: 'before' in slot.dataset,
+				lang,
+			},
+		})
+	}
+
+	// Кнопка копирования в рамке блока кода (doc-plugin.ts).
+	document.addEventListener('click', (event) => {
+		const button = (event.target as Element).closest<HTMLButtonElement>('.code-block__copy')
+		const code = button?.parentElement?.querySelector('pre')
+
+		if (!button || !code) return
+
+		navigator.clipboard.writeText(code.innerText).then(() => {
+			button.classList.add('code-block__copy--copied')
+			setTimeout(() => button.classList.remove('code-block__copy--copied'), 2000)
+		})
+	})
+
+	// Пункт оглавления в выпадающем списке уводит к разделу, а список закрывается.
+	document.getElementById('toc-popover')?.addEventListener('click', (event) => {
+		if ((event.target as Element).closest('a')) (event.currentTarget as HTMLElement).hidePopover()
+	})
+
+	// Текущий раздел в оглавлении справа: последний заголовок, ушедший под шапку.
+	const links = [...document.querySelectorAll<HTMLAnchorElement>('#toc .toc__link')]
+	const marker = document.querySelector<HTMLElement>('#toc .toc__marker')
+	let frame = 0
+
+	function spy() {
+		frame = 0
+
+		const offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) + 1
+		let active: HTMLAnchorElement | undefined
+
+		for (const link of links) {
+			const target = document.getElementById(decodeURIComponent(link.hash.slice(1)))
+
+			if (target && target.getBoundingClientRect().top <= offset) active = link
+		}
+
+		for (const link of links) link.classList.toggle('toc__link--active', link === active)
+
+		if (!marker) return
+
+		marker.style.opacity = active ? '1' : '0'
+
+		if (active) marker.style.top = `${active.offsetTop + 7}px`
+	}
+
+	if (links.length) {
+		addEventListener('scroll', () => (frame ||= requestAnimationFrame(spy)), { passive: true })
+		spy()
+	}
+</script>
+
+<style>
+	/* Полоса под шапкой на узком экране: дерево слева, оглавление справа. */
+	.local-nav {
+		position: sticky;
+		z-index: 25;
+		top: var(--nav-height);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 48px;
+		margin-top: var(--nav-height);
+		padding: 0 24px;
+		border-bottom: 1px solid var(--divider);
+		background-color: var(--bg);
+
+		@media (--desktop) {
+			position: fixed;
+			right: 0;
+			left: var(--sidebar-width);
+			margin-top: 0;
+			padding: 0 32px;
+		}
+
+		@media (--wide) {
+			display: none;
+		}
+
+		&__button {
+			display: flex;
+			gap: 6px;
+			align-items: center;
+			height: 48px;
+			font-size: 12px;
+			font-weight: 500;
+			color: var(--text-2);
+			transition: color 0.5s;
+
+			@media (--desktop) {
+				&:first-child {
+					visibility: hidden;
+				}
+			}
+
+			&:hover {
+				color: var(--text-1);
+				transition: color 0.25s;
+			}
+		}
+
+		&__icon {
+			width: 14px;
+			height: 14px;
+			fill: none;
+			stroke: currentcolor;
+			stroke-linecap: round;
+			stroke-width: 2;
+		}
+	}
+
+	/* Колонка текста по центру и оглавление справа, размеры как у VitePress. */
+	.doc-page {
+		display: flex;
+		justify-content: center;
+		padding: 32px 24px 0;
+
+		@media (--sm) {
+			padding: 48px 32px 0;
+		}
+
+		@media (--desktop) {
+			padding: calc(var(--nav-height) + 48px + 32px) 32px 0 calc(var(--sidebar-width) + 32px);
+		}
+
+		@media (--wide) {
+			padding-top: calc(var(--nav-height) + 48px);
+		}
+
+		&__main {
+			flex-grow: 1;
+			min-width: 0;
+			max-width: 688px;
+
+			@media (--wide) {
+				margin-inline: auto;
+			}
+		}
+
+		&__aside {
+			display: none;
+
+			@media (--wide) {
+				position: sticky;
+				top: calc(var(--nav-height) + 48px);
+				overflow-y: auto;
+				display: block;
+				flex-shrink: 0;
+				align-self: flex-start;
+				width: 224px;
+				max-height: calc(100dvh - var(--nav-height) - 48px - var(--statusline-height));
+				margin-left: 112px;
+			}
+		}
+	}
+
+	/* Шапка плюс полоса под ней: якоря не прячутся ни под одну. */
+	:global(html) {
+		@media (--below-wide) {
+			scroll-padding-top: calc(var(--nav-height) + 48px + 24px);
+		}
+	}
+</style>

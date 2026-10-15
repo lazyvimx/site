@@ -1,0 +1,265 @@
+---
+import HeroDemo from '#frontend/components/hero-demo.svelte'
+import NavBar from '#frontend/components/nav-bar.astro'
+import { home } from '#frontend/data/home.ts'
+import type { Lang } from '#frontend/lib/i18n.ts'
+
+type Props = { lang: Lang }
+
+const { lang } = Astro.props
+const page = home[lang]
+const external = (link: string) => /^https?:/.test(link)
+---
+
+<NavBar />
+
+<main class="home" id="content">
+	<section class="hero">
+		<HeroDemo client:load />
+		<div class="hero__main">
+			<h1 class="hero__heading">
+				<span class="hero__name">{page.name}</span>
+				<span class="hero__text">{page.text}</span>
+			</h1>
+			<p class="hero__tagline">{page.tagline}</p>
+			<div class="hero__actions">
+				{page.actions.map((action) => (
+					<a
+						class:list={[
+							'hero__action',
+							{ 'hero__action--brand': action.brand, 'hero__action--tutor': action.tutor },
+						]}
+						href={action.link}
+						target={external(action.link) ? '_blank' : undefined}
+						rel={external(action.link) ? 'noreferrer' : undefined}
+					>
+						{action.text}
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<ul class="features">
+		{page.features.map((feature) => (
+			<li class="features__item">
+				<span class="features__icon" aria-hidden="true">
+					{feature.icon}
+				</span>
+				<h2 class="features__title">{feature.title}</h2>
+				<p class="features__details">{feature.details}</p>
+			</li>
+		))}
+	</ul>
+</main>
+
+<style>
+	.home {
+		padding-bottom: calc(48px + var(--statusline-height));
+	}
+
+	/* Слева сплошной цвет под текстом, справа запись, между ними градиент. Под прозрачной
+	   шапкой hero начинается от самого верха страницы. */
+	.hero {
+		position: relative;
+		padding: calc(var(--nav-height) + 48px) 24px 48px;
+		background-color: var(--hero-bg);
+
+		@media (--sm) {
+			padding: calc(var(--nav-height) + 80px) 48px 64px;
+		}
+
+		@media (--desktop) {
+			padding: calc(var(--nav-height) + 80px) 64px 96px;
+		}
+
+		/* Слева сплошная заливка, вправо она растворяется и открывает запись. Стопы
+		   в пикселях от правого края: прозрачная зона совпадает с шириной записи. */
+		&::before {
+			content: '';
+			position: absolute;
+			z-index: 1;
+			inset: 0;
+			background: linear-gradient(
+				to left,
+				color-mix(in srgb, var(--hero-bg) 10%, transparent) 0,
+				color-mix(in srgb, var(--hero-bg) 45%, transparent) 520px,
+				color-mix(in srgb, var(--hero-bg) 85%, transparent) 860px,
+				var(--hero-bg) 1120px
+			);
+		}
+
+		&__main {
+			position: relative;
+			z-index: 2;
+			max-width: 1152px;
+			margin: 0 auto;
+		}
+
+		&__heading {
+			margin: 0;
+			font-size: 32px;
+			font-weight: 700;
+			line-height: 40px;
+			letter-spacing: -0.4px;
+
+			@media (--sm) {
+				max-width: 576px;
+				font-size: 48px;
+				line-height: 56px;
+			}
+
+			@media (--desktop) {
+				font-size: 56px;
+				line-height: 64px;
+			}
+		}
+
+		&__name {
+			display: block;
+			color: var(--brand);
+
+			/* Курсор после названия, как в буфере на пустой строке. */
+			&::after {
+				content: '▊';
+				margin-left: 4px;
+				color: var(--vim-accent);
+				animation: vim-blink 1.2s step-end infinite;
+			}
+		}
+
+		&__text {
+			display: block;
+			color: var(--text-1);
+		}
+
+		&__tagline {
+			max-width: 576px;
+			margin: 0;
+			padding-top: 8px;
+			font-size: 18px;
+			font-weight: 500;
+			line-height: 28px;
+			color: var(--text-2);
+
+			@media (--sm) {
+				padding-top: 12px;
+				font-size: 20px;
+				line-height: 32px;
+			}
+
+			@media (--desktop) {
+				font-size: 24px;
+				line-height: 36px;
+			}
+		}
+
+		&__actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			padding-top: 24px;
+
+			@media (--sm) {
+				padding-top: 32px;
+			}
+		}
+
+		&__action {
+			display: inline-block;
+			padding: 0 20px;
+			border: 1px solid transparent;
+			font-size: 14px;
+			font-weight: 600;
+			line-height: 38px;
+			color: var(--text-1);
+			white-space: nowrap;
+			background-color: color-mix(in srgb, var(--text-1) 12%, transparent);
+			transition:
+				color 0.25s,
+				background-color 0.25s;
+
+			&:hover {
+				background-color: color-mix(in srgb, var(--text-1) 20%, transparent);
+			}
+
+			&--brand {
+				color: var(--mode-fg);
+				background-color: var(--brand);
+
+				&:hover {
+					background-color: var(--brand-hover);
+				}
+			}
+
+			/* Без клавиатуры vim-слоя нет, и туториал звать некуда. */
+			&--tutor {
+				@media (--no-hover) {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.features {
+		display: grid;
+		gap: 16px;
+		max-width: 1152px;
+		margin: 0 auto;
+		padding: 24px 24px 0;
+		list-style: none;
+
+		@media (--sm) {
+			grid-template-columns: repeat(2, 1fr);
+			padding-inline: 48px;
+		}
+
+		@media (--desktop) {
+			grid-template-columns: repeat(3, 1fr);
+			padding-inline: 64px;
+		}
+
+		@media (width >= 1280px) {
+			padding-inline: 0;
+		}
+
+		&__item {
+			padding: 24px;
+			border: 1px solid var(--bg-soft);
+			background-color: var(--bg-soft);
+		}
+
+		&__icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 48px;
+			height: 48px;
+			margin-bottom: 20px;
+			font-size: 24px;
+			background-color: var(--divider);
+		}
+
+		&__title {
+			margin: 0;
+			font-size: 16px;
+			font-weight: 600;
+			line-height: 24px;
+		}
+
+		&__details {
+			margin: 0;
+			padding-top: 8px;
+			font-size: 14px;
+			font-weight: 500;
+			line-height: 24px;
+			color: var(--text-2);
+		}
+	}
+
+	@keyframes vim-blink {
+		50% {
+			opacity: 0;
+		}
+	}
+</style>

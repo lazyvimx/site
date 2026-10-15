@@ -1,0 +1,167 @@
+/* Палитра сайта как у самого lazyvimx: catppuccin, светлая -- latte, тёмная -- macchiato.
+   Каждый токен -- пара `light-dark()`, так что тему переключает одно `color-scheme`,
+   и копия страницы в круге theme-peek перекрашивается сама. */
+:root {
+	--font-mono: 'JetBrains Mono Variable', ui-monospace, sfmono-regular, menlo, monospace;
+
+	--nav-height: 64px;
+	--sidebar-width: 272px;
+	--statusline-height: 26px;
+
+	--bg: light-dark(#eff1f5, #24273a);
+	--bg-soft: light-dark(#e6e9ef, #1e2030);
+	--text-1: light-dark(#4c4f69, #cad3f5);
+	--text-2: light-dark(#5c5f77, #b8c0e0);
+	--text-3: light-dark(#6c6f85, #a5adcb);
+	--divider: light-dark(#ccd0da, #363a4f);
+	--gutter: light-dark(#bcc0cc, #494d64);
+
+	/* Синим latte набраны все ссылки, и на фоне страницы он даёт 4.34:1 вместо нужных 4.5.
+	   Оттенок подобран по самому тёмному фону, на котором он встречается, -- заливке сайдбара. */
+	--brand: light-dark(#1950c4, #8aadf4);
+	--brand-hover: light-dark(#1442a3, #729df2);
+
+	/* Инлайн-код лежит на своей серой плашке, там тот же синий тонет, и ему нужен ещё шаг вглубь. */
+	--code-bg: light-dark(#ccd0da, #363a4f);
+	--code-color: light-dark(#1a4b9e, #8aadf4);
+	/* Блок кода белым: на сером фоне комментарии подсветки давали 3.96:1,
+	   а перекрасить их нечем, цвет приходит из темы Shiki. */
+	--code-block-bg: light-dark(#ffffff, #1e2030);
+
+	/* На светлом фоне та же доля чёрного даёт грязно-серую полосу, поэтому доли у тем разные. */
+	--nav-bg: light-dark(color-mix(in srgb, #eff1f5 96%, #000), color-mix(in srgb, #24273a 85%, #000));
+	/* Панель дерева на тон светлее страницы, как отдельное окно. */
+	--panel-bg: light-dark(#e6e9ef, #1e2030);
+	--sidebar-bg: color-mix(in srgb, var(--panel-bg) 99%, #fff);
+	--cursorline: light-dark(
+		color-mix(in srgb, var(--sidebar-bg) 95%, #000),
+		color-mix(in srgb, var(--sidebar-bg) 95%, #fff)
+	);
+
+	/* Hero: слева сплошной цвет под текстом, справа запись, между ними градиент. */
+	--hero-bg: light-dark(#dce0e8, #181926);
+
+	/* Статуслайн. Синий и приглушённый серый взяты темнее latte: на заливке полосы
+	   её штатные оттенки не дотягивают до 4.5:1. */
+	--bar-bg: light-dark(#ccd0da, #1e2030);
+	--bar-fg: light-dark(#43465a, #a5adcb);
+	--mode-normal: light-dark(#1a5ad9, #8aadf4);
+	--mode-visual: light-dark(#8839ef, #c6a0f6);
+	--mode-command: light-dark(#fe640b, #f5a97f);
+	--mode-fg: light-dark(#eff1f5, #181926);
+	--vim-error: light-dark(#d20f39, #ed8796);
+	--vim-accent: light-dark(#1a4b9e, #8aadf4);
+	--vim-dim: light-dark(#50536c, #8087a2);
+	--vim-visual-bg: light-dark(rgb(114 135 253 / 25%), rgb(138 173 244 / 25%));
+	--section-bg: light-dark(#bcc0cc, #363a4f);
+
+	color-scheme: light dark;
+
+	&[data-theme='light'] {
+		color-scheme: light;
+	}
+
+	&[data-theme='dark'] {
+		color-scheme: dark;
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	/* В терминале скруглений не бывает. */
+	border-radius: 0;
+}
+
+html {
+	/* Якоря не прячутся под шапкой. */
+	scroll-padding-top: calc(var(--nav-height) + 24px);
+	-webkit-text-size-adjust: 100%;
+}
+
+body,
+.theme-peek {
+	min-height: 100dvh;
+	margin: 0;
+	font-family: var(--font-mono);
+	font-size: 16px;
+	font-synthesis: style;
+	line-height: 24px;
+	color: var(--text-1);
+	text-rendering: optimizelegibility;
+	background: var(--bg);
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Safari на iPhone приближает страницу к полю с текстом мельче 16px, стоит в нём встать. */
+input,
+textarea,
+select {
+	@media (--touch) {
+		font-size: max(1rem, 1em);
+	}
+}
+
+button {
+	cursor: pointer;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	color: inherit;
+	background: transparent;
+}
+
+a {
+	color: inherit;
+	text-decoration: inherit;
+}
+
+img,
+video {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+/* Выделение текста -- в цветах Visual-режима. */
+::selection {
+	background: var(--vim-visual-bg);
+}
+
+/* Скроллбар терминальной толщины, без фона. */
+* {
+	scrollbar-color: var(--vim-dim) transparent;
+	scrollbar-width: thin;
+}
+
+:focus-visible {
+	outline: 2px solid var(--brand);
+	outline-offset: 2px;
+}
+
+/* Ссылка для клавиатуры и скринридера: видна, только пока на ней фокус. */
+.skip-link {
+	position: fixed;
+	z-index: 100;
+	top: 8px;
+	left: 8px;
+	transform: translateY(-200%);
+	padding: 8px 16px;
+	font-weight: 700;
+	color: var(--brand);
+	background: var(--bg);
+
+	&:focus {
+		transform: none;
+	}
+}
+
+.visually-hidden {
+	position: absolute;
+	overflow: hidden;
+	width: 1px;
+	height: 1px;
+	white-space: nowrap;
+	clip-path: inset(50%);
+}

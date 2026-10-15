@@ -1,0 +1,97 @@
+---
+import type { MarkdownHeading } from 'astro'
+
+import { ui } from '#frontend/data/ui.ts'
+import type { Lang } from '#frontend/lib/i18n.ts'
+
+type Props = { lang: Lang; headings: MarkdownHeading[]; id: string; popover?: boolean }
+
+const { lang, headings, id, popover = false } = Astro.props
+// Только разделы второго уровня, как outline по умолчанию у VitePress: у экстр
+// подразделов десятки, и с ними оглавление стало бы длиннее самой страницы.
+const items = headings.filter((heading) => heading.depth === 2)
+---
+
+<nav
+	class:list={['toc', { 'toc--popover': popover }]}
+	id={id}
+	aria-label={ui[lang].outline}
+	popover={popover ? '' : undefined}
+>
+	{!popover && <span class="toc__marker" aria-hidden="true" />}
+	<p class="toc__title">{ui[lang].outline}</p>
+	<ul class="toc__list">
+		{items.map((heading) => (
+			<li>
+				<a class="toc__link" href={`#${heading.slug}`}>
+					{heading.text}
+				</a>
+			</li>
+		))}
+	</ul>
+</nav>
+
+<style>
+	.toc {
+		position: relative;
+		padding-left: 16px;
+		border-left: 1px solid var(--divider);
+		font-size: 14px;
+
+		&--popover {
+			position: fixed;
+			inset: calc(var(--nav-height) + 48px) 24px auto auto;
+			overflow-y: auto;
+			width: min(320px, calc(100vw - 48px));
+			max-height: 60dvh;
+			margin: 0;
+			padding: 12px 16px;
+			border: 1px solid var(--divider);
+			color: var(--text-1);
+			background: var(--bg-soft);
+			box-shadow: 0 12px 32px rgb(0 0 0 / 20%);
+		}
+
+		&__title {
+			margin: 0;
+			font-weight: 600;
+			line-height: 32px;
+		}
+
+		&__list {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		&__link {
+			overflow: hidden;
+			display: block;
+			line-height: 32px;
+			color: var(--text-2);
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			transition: color 0.5s;
+
+			&:hover,
+			&--active {
+				color: var(--text-1);
+				transition: color 0.25s;
+			}
+		}
+
+		/* Маркер текущего раздела на линии слева. */
+		&__marker {
+			position: absolute;
+			top: 32px;
+			left: -1px;
+			width: 2px;
+			height: 18px;
+			opacity: 0;
+			background-color: var(--brand);
+			transition:
+				top 0.25s cubic-bezier(0, 1, 0.5, 1),
+				opacity 0.25s;
+		}
+	}
+</style>

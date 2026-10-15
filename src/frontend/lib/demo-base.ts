@@ -1,0 +1,16 @@
+// Записи демо живут в ветке assets репозитория lazyvimx/nvim, а раздаёт их CDN:
+// с самого GitHub они приходили с кешем в пять минут.
+//
+// Ссылка закреплена на коммит, а не на ветку: по ветке jsDelivr держит файл неделю,
+// по коммиту -- год и с immutable. Хеш нужен полный, от сокращённого кеш снова недельный.
+// Цена -- эту строку править всякий раз, когда демо переснимут (docs/demo/record.sh
+// в lazyvimx/nvim, потом коммит в ветку assets).
+const commit = '95b12fb43bda548cec14c3134a9bd79abbeade56'
+const path = `/gh/lazyvimx/nvim@${commit}/demo`
+
+// Общий вход jsDelivr (cdn.jsdelivr.net) во многих сетях отвечает через Cloudflare,
+// а его в России режут: записи просто не доезжали. Берём прямой вход в сеть Fastly --
+// те же файлы, тот же годовой кеш, но без Cloudflare. Общий вход остаётся запасным:
+// он умнее выбирает ближнюю точку, и там, где Cloudflare доступен, это чуть быстрее.
+export const demoBase = `https://fastly.jsdelivr.net${path}`
+export const demoFallback = `https://cdn.jsdelivr.net${path}`
