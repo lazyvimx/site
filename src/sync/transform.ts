@@ -74,7 +74,10 @@ export function transform(input: string, lang: Lang, demo: (name: string) => Dem
 	text = text.replace(/ \(\[🇷🇺\]\([^)]*\)\)/g, '')
 	text = text.replace(/ \(\[🇬🇧\]\([^)]*\)\)/g, '')
 
-	// Баннер и бейджи из шапки README дублируют hero лендинга.
+	// Баннер и бейджи из шапки README дублируют hero лендинга. Шапка -- это HTML-блоки
+	// в самом начале файла: переключатель языка, баннер, бейджи, подзаголовок.
+	text = text.replace(/^(?:<(p|h3)\b[^>]*>[\s\S]*?<\/\1>\s*)+/, '')
+	// Шапка старого формата: картинка-баннер и бейджи в <div align="center">.
 	text = text.replace(/^!\[[^\]]*\]\([^)]*banner[^)]*\)\n\n/, '')
 	text = text.replace(/<div align="center">[\s\S]*?<\/div>\n\n/, '')
 
@@ -121,12 +124,11 @@ export function transform(input: string, lang: Lang, demo: (name: string) => Dem
 
 	text = text.replaceAll('(./)', `(${github}/tree/main/docs)`)
 
-	// Имя модуля в строке импорта экстры ведёт на её исходник. Ветка develop,
-	// как и у доков: свежих экстр в main может ещё не быть.
+	// Имя модуля в строке импорта экстры ведёт на её исходник в main, откуда берутся и доки.
 	text = text.replace(
 		/^(\*\*[^*]+:\*\* )`(lazyvimx\.extras\.[a-z0-9.-]+)`/gm,
 		(_, label: string, mod: string) =>
-			`${label}[\`${mod}\`](${github}/blob/develop/lua/${mod.replaceAll('.', '/')}.lua)`,
+			`${label}[\`${mod}\`](${github}/blob/main/lua/${mod.replaceAll('.', '/')}.lua)`,
 	)
 
 	return text

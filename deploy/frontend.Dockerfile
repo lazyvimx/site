@@ -7,10 +7,10 @@ FROM node:26.11.1-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund --loglevel=error
-# Тексты страниц живут в lazyvimx/nvim, свежие -- в ветке develop. BuildKit сверяет
+# Тексты страниц живут в lazyvimx/nvim, в ветке main. BuildKit сверяет
 # её коммит на каждой сборке, так что слой и всё после него пересобираются ровно тогда,
 # когда документация поменялась, а релиз сайта для этого не нужен.
-ADD https://github.com/lazyvimx/nvim.git#develop /nvim
+ADD https://github.com/lazyvimx/nvim.git#main /nvim
 ENV LAZYVIMX_DIR=/nvim
 COPY . .
 # `.env` приходит секретом сборки: переменные нужны во время сборки,
