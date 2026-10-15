@@ -3,7 +3,7 @@ import type { Lang } from '#frontend/lib/i18n.ts'
 /** Подписи интерфейса на обоих языках, тексты документации сюда не входят. */
 export const ui = {
 	en: {
-		description: 'An enhancement layer on top of LazyVim: 50 optional extras and 39 plugin overrides',
+		description: 'An enhancement layer on top of LazyVim: 51 optional extras and 40 plugin overrides',
 		locale: 'en_US',
 		langName: 'English',
 		search: 'Search',
@@ -29,7 +29,7 @@ export const ui = {
 		home: 'Take me home',
 	},
 	ru: {
-		description: 'Слой улучшений поверх LazyVim: 50 опциональных экстр и 39 оверрайдов плагинов',
+		description: 'Слой улучшений поверх LazyVim: 51 опциональная экстра и 40 оверрайдов плагинов',
 		locale: 'ru_RU',
 		langName: 'Русский',
 		search: 'Поиск',
