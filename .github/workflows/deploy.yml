@@ -1,14 +1,18 @@
-# Выкладка на сервер projects. Контент подтягивается из репозитория lazyvimx
-# на каждой сборке, поэтому пересобрать сайт после правки доков можно кнопкой
-# Run workflow — без коммита сюда.
 name: Deploy
 
+# Мёрж в main только обновляет релизный PR. Мёрж этого PR выпускает релиз,
+# и уже релиз уезжает на сервер. Ручной запуск деплоит любой релизный тег,
+# например, чтобы откатиться.
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to deploy, e.g. v1.2.0. Empty deploys the newest main.
+        required: false
 
-# Выкладки идут по очереди, новая не обрывает уже начатую сборку.
+# Деплои идут по одному, новый не прерывает уже начатую сборку.
 concurrency:
   group: deploy
   cancel-in-progress: false
@@ -17,30 +21,42 @@ permissions:
   contents: read
 
 jobs:
+  release:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    outputs:
+      created: ${{ steps.release.outputs.created }}
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - id: release
+        uses: aimuzov-projects/infra-site-kit/release@v1
+
+  check:
+    needs: release
+    if: needs.release.outputs.created == 'true'
+    uses: ./.github/workflows/check.yml
+
+  # Пока сервер не готов (ключ, клон в /srv, сайт в Caddy), деплой пропускается.
+  # Включается переменной репозитория `DEPLOY_ENABLED=true`,
+  # она появляется вместе с ключом на сервере.
   deploy:
+    needs: [release, check]
+    if: >-
+      always() && vars.DEPLOY_ENABLED == 'true' &&
+      (github.event_name == 'workflow_dispatch' || needs.check.result == 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
       name: production
       url: https://lazyvimx.aimuzov.online
     steps:
-      # Сервер сам знает, что делать: ключ в authorized_keys привязан к deploy/remote.sh,
-      # поэтому команду ssh не передаём.
-      - name: Deploy on server
-        env:
-          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          KNOWN_HOST: '185.219.43.208 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC2ZdrmhppTABH63kiUI77k6cWL7D034ZN3aFnd5PUf5Av/Kpf+ipgL4Wet/iZ1CakOTlXGmiSPVJIaY1QFebdpk7Lzm2D0Ol7jbfTW9C+BQSvd4I+qnOPNTECaV8Bw5xbVu8Ks3Ht55FHLCOf7W3rA2L39tvQebhI+3ViYoF1jdWPVIm1aAM7KlW+TZG3wWVAT7pr8aqjr0EoqHNGpKRIe95dyCPfs8m7k7r7sIzxO25vLCR4Cz9ti1tS93IXMfKwxkIiqcpIwlBy2M+qOFkHHiLs7Cn9Ay6MwPK/V70LxB6C4D8ejcHklOCLyP4wc4bW8osQ7Idu2YMWt8HYOFUZFKjJ+FkY5zxbFmBf1ffMvGzdtC0ZUqVRxLKN5/3c5+2Ox8VvAycgVhLFoeSZGe3xOFKUC+wHqOOJCYufaAlVInx9o5jv+6pShGJ6eoKJyTsb2dXwPWPcoXEPt3SdonAjtworfsQKDqTPMjmqyCM/qweYB/oUR9e+48utM9zFC44s='
-        run: |
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
-          chmod 600 ~/.ssh/deploy
-          printf '%s\n' "$KNOWN_HOST" > ~/.ssh/known_hosts
-          ssh -i ~/.ssh/deploy -o IdentitiesOnly=yes -o BatchMode=yes root@185.219.43.208
-
-      - name: Check site
-        run: |
-          for i in 1 2 3 4 5; do
-            curl -fsS -o /dev/null -w "%{http_code}\n" https://lazyvimx.aimuzov.online/ && exit 0
-            sleep 5
-          done
-          exit 1
+      - uses: aimuzov-projects/infra-site-kit/deploy@v1
+        with:
+          ssh-key: ${{ secrets.DEPLOY_SSH_KEY }}
+          url: https://lazyvimx.aimuzov.online
+          ref: ${{ needs.release.outputs.tag || inputs.tag }}
