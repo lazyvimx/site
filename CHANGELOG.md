@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/lazyvimx/site/compare/v1.2.2...v1.3.0) (2026-10-18)
+
+
+### Features
+
+* move the 404 to the shared not-found page with a Russian twin ([d918698](https://github.com/lazyvimx/site/commit/d9186986a48b417ff202887a000663e019314419))
+* move the 404 to the shared not-found page with a Russian twin ([0d9eab6](https://github.com/lazyvimx/site/commit/0d9eab6935709abad84e7d1b5cf508a822dc9ccd))
+
 ## [1.2.2](https://github.com/lazyvimx/site/compare/v1.2.1...v1.2.2) (2026-10-15)
 
 
