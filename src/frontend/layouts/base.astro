@@ -4,6 +4,7 @@ import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 import fontLatin from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url'
 import Metrika from '@aimuzov-projects/infra-site-kit/metrika.astro'
 import MetrikaPixel from '@aimuzov-projects/infra-site-kit/metrika-pixel.astro'
+import ThemeBoot from '@aimuzov-projects/infra-site-kit/theme-boot.astro'
 
 import VimShell from '#frontend/components/vim/vim-shell.svelte'
 import { navPages } from '#frontend/data/nav.ts'
@@ -72,7 +73,8 @@ const pages = navPages.map((page) => ({ slug: page.slug, text: page.text[lang], 
 		<!-- Весь сайт набран JetBrains Mono, как код в самом Neovim. Предзагружаем только
 		     латиницу: ею набрано почти всё. -->
 		<link rel="preload" as="font" type="font/woff2" href={fontLatin} crossorigin />
-		<script is:inline src="/theme.js"></script>
+		<script is:inline src="/theme-legacy.js"></script>
+		<ThemeBoot />
 		<Metrika id={site.metrikaId} init={{ webvisor: true }} />
 		<slot name="head" />
 	</head>

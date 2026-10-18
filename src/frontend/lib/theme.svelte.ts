@@ -1,15 +1,7 @@
-export type Scheme = 'light' | 'dark'
+import { schemeOf, toggleTheme, watchTheme as watch, type Scheme } from '@aimuzov-projects/infra-site-kit/theme.js'
 
-/** Ключ общий со скриптом public/theme.js: тот применяет выбор до отрисовки. */
-const KEY = 'theme'
-
-const systemScheme = (): Scheme => (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-
-function readScheme(): Scheme {
-	const stored = document.documentElement.dataset.theme
-
-	return stored === 'light' || stored === 'dark' ? stored : systemScheme()
-}
+// Логика темы в infra-site-kit, выбор до отрисовки ставит ThemeBoot в layouts/base.astro.
+export type { Scheme }
 
 /**
  * Схема, в которой нарисована страница, для компонентов, которым мало CSS:
@@ -24,33 +16,8 @@ export function watchTheme() {
 	if (watching) return
 
 	watching = true
-	theme.scheme = readScheme()
-
-	const sync = () => (theme.scheme = readScheme())
-
-	matchMedia('(prefers-color-scheme: dark)').addEventListener('change', sync)
-	new MutationObserver(sync).observe(document.documentElement, { attributeFilter: ['data-theme'] })
+	watch((current, system) => (theme.scheme = schemeOf(current, system)))
 }
 
-/**
- * Ставит схему. Совпала с системной -- выбор забываем, и сайт снова идёт за системой,
- * как было на VitePress.
- */
-export function setScheme(scheme: Scheme) {
-	const root = document.documentElement
-	const follow = scheme === systemScheme()
-
-	if (follow) delete root.dataset.theme
-	else root.dataset.theme = scheme
-
-	try {
-		if (follow) localStorage.removeItem(KEY)
-		else localStorage.setItem(KEY, scheme)
-	} catch {
-		// Хранилище закрыто (приватный режим) -- тема продержится до перезагрузки.
-	}
-}
-
-export function toggleScheme() {
-	setScheme(readScheme() === 'dark' ? 'light' : 'dark')
-}
+/** Совпала новая схема с системной -- выбор забываем, и сайт снова идёт за системой, как было на VitePress. */
+export const toggleScheme = () => toggleTheme()
