@@ -27,6 +27,8 @@ export const ui = {
 		notFoundText:
 			"But if you don't change your direction, and if you keep looking, you may end up where you are heading.",
 		home: 'Take me home',
+		back: 'Go back',
+		suggest: 'Maybe you meant',
 	},
 	ru: {
 		description: 'Слой улучшений поверх LazyVim: 51 опциональная экстра и 40 оверрайдов плагинов',
@@ -52,6 +54,8 @@ export const ui = {
 		notFound: 'Страница не найдена',
 		notFoundText: 'Возможно, ссылка устарела или в ней опечатка.',
 		home: 'На главную',
+		back: 'Назад',
+		suggest: 'Возможно, вы искали',
 	},
 } satisfies Record<Lang, Record<string, string>>
 

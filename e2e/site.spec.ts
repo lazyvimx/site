@@ -1,10 +1,16 @@
-import { pageScheme, siteChecks } from '@aimuzov-projects/infra-site-kit/playwright/checks'
-import { expect, test } from '@playwright/test'
+import {
+	expectAccessible,
+	expectNotFound,
+	pageScheme,
+	siteChecks,
+} from '@aimuzov-projects/infra-site-kit/playwright/checks'
+import { expect, test, type Page } from '@playwright/test'
 
 // Проверки, общие для всех сайтов: страницы из sitemap, axe в обеих темах,
-// переключатель темы с подглядыванием и ленивая Метрика.
+// переключатель темы с подглядыванием, ленивая Метрика и общая 404.
 siteChecks({
 	metrika: true,
+	notFound: { exclude: ['/ru/'] },
 	theme: { button: (page) => page.locator('body > .nav-bar .theme-toggle'), path: '/extras' },
 })
 
@@ -105,5 +111,63 @@ test.describe('search', () => {
 			await input.fill(query)
 			await expect(page.locator('.search__hit').first()).toContainText(title)
 		})
+	}
+})
+
+test.describe('the Russian 404', () => {
+	// astro preview отдаёт на любой неизвестный адрес корневую 404.html, а nginx под /ru/ --
+	// русскую. Здесь то же правило из deploy/nginx.conf: 404 документа под /ru/ получает ru/404.html.
+	const russian404 = (page: Page) =>
+		page.route(/\/ru\//, async (route) => {
+			const response = await route.fetch()
+
+			if (route.request().resourceType() !== 'document' || response.status() !== 404) {
+				return route.fulfill({ response })
+			}
+
+			const ru = await route.fetch({ url: new URL('/ru/404.html', route.request().url()).href })
+
+			return route.fulfill({ status: 404, contentType: 'text/html', body: await ru.text() })
+		})
+
+	test.beforeEach(({ page }) => russian404(page))
+
+	test('answers 404 in Russian with a way to the Russian home', async ({ page }) => {
+		await expectNotFound(page, { path: '/ru/kit-404-probe', home: '/ru/' })
+		await page.goto('/ru/kit-404-probe')
+		await expect(page.locator('html')).toHaveAttribute('lang', 'ru')
+		await expect(page.locator('h1')).toHaveText('Страница не найдена')
+	})
+
+	test('suggests only Russian pages', async ({ page }) => {
+		await page.goto('/ru/extra')
+
+		const links = page.locator('[data-not-found-suggest] a')
+
+		await expect(links.first()).toHaveAttribute('href', '/ru/extras')
+
+		for (const href of await links.evaluateAll((all) => all.map((a) => a.getAttribute('href')))) {
+			expect(href).toMatch(/^\/ru\//)
+		}
+	})
+
+	for (const colorScheme of ['light', 'dark'] as const) {
+		test(`passes axe in the ${colorScheme} scheme`, async ({ page }) => {
+			await page.emulateMedia({ colorScheme })
+			await page.goto('/ru/kit-404-probe')
+			await expectAccessible(page)
+		})
+	}
+})
+
+test('the English 404 suggests no Russian pages', async ({ page }) => {
+	await page.goto('/extra')
+
+	const links = page.locator('[data-not-found-suggest] a')
+
+	await expect(links.first()).toHaveAttribute('href', '/extras')
+
+	for (const href of await links.evaluateAll((all) => all.map((a) => a.getAttribute('href')))) {
+		expect(href).not.toMatch(/^\/ru\//)
 	}
 })

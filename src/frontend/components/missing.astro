@@ -1,0 +1,44 @@
+---
+// 404 на языке страницы: nginx отдаёт /ru/404.html под /ru/, а /404.html -- везде ещё.
+// Подсказки каждая ищет только среди страниц своего языка.
+import NotFound from '@aimuzov-projects/infra-site-kit/not-found.astro'
+
+import NavBar from '#frontend/components/nav-bar.astro'
+import { ui } from '#frontend/data/ui.ts'
+import Base from '#frontend/layouts/base.astro'
+import { type Lang, pagePath } from '#frontend/lib/i18n.ts'
+
+type Props = { lang: Lang }
+
+const { lang } = Astro.props
+const t = ui[lang]
+const home = pagePath(lang)
+---
+
+<Base title="404" description={t.notFound} index={false}>
+	<NavBar />
+	<main class="missing" id="content">
+		<NotFound
+			title={t.notFound}
+			text={t.notFoundText}
+			home={{ href: home, label: t.home }}
+			back={t.back}
+			suggest={t.suggest}
+			scope={home}
+			exclude={lang === 'en' ? [pagePath('ru')] : []}
+		/>
+	</main>
+</Base>
+
+<style>
+	.missing {
+		--not-found-accent: var(--brand);
+		--not-found-muted: var(--text-2);
+		--not-found-radius: 0;
+
+		display: grid;
+		place-content: center;
+		min-height: 100dvh;
+		padding: var(--nav-height) 24px var(--statusline-height);
+	}
+</style>
