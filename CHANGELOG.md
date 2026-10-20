@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/lazyvimx/site/compare/v1.3.0...v1.3.1) (2026-10-20)
+
+
+### Bug Fixes
+
+* count 52 extras on the landing ([c343b86](https://github.com/lazyvimx/site/commit/c343b8699fb44396e2998fc8cf565df5d0772b0e))
+* count 52 extras on the landing ([b383b11](https://github.com/lazyvimx/site/commit/b383b113cd2a75bf4e08f23758ce32e02b542826))
+
 ## [1.3.0](https://github.com/lazyvimx/site/compare/v1.2.2...v1.3.0) (2026-10-18)
 
 
