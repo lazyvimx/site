@@ -16,11 +16,11 @@ export type Home = {
 export const home: Record<Lang, Home> = {
 	en: {
 		description:
-			'51 optional extras and 40 plugin overrides for LazyVim — themes, motions, git workflow, Russian keyboard layout. Every extra is enabled piece by piece.',
+			'52 optional extras and 40 plugin overrides for LazyVim — themes, motions, git workflow, Russian keyboard layout. Every extra is enabled piece by piece.',
 		name: 'lazyvimx',
 		text: 'An enhancement layer for LazyVim',
 		tagline:
-			'51 optional extras and 40 plugin overrides. LazyVim stays untouched — everything else is enabled piece by piece.',
+			'52 optional extras and 40 plugin overrides. LazyVim stays untouched — everything else is enabled piece by piece.',
 		actions: [
 			{ text: '🚀 Get Started', link: '/getting-started', brand: true },
 			{ text: '🎬 Browse Extras', link: '/extras' },
@@ -67,11 +67,11 @@ export const home: Record<Lang, Home> = {
 	},
 	ru: {
 		description:
-			'51 опциональная экстра и 40 оверрайдов плагинов для LazyVim — темы, движения, работа с git, русская раскладка. Каждая экстра включается отдельно.',
+			'52 опциональные экстры и 40 оверрайдов плагинов для LazyVim — темы, движения, работа с git, русская раскладка. Каждая экстра включается отдельно.',
 		name: 'lazyvimx',
 		text: 'Слой улучшений для LazyVim',
 		tagline:
-			'51 опциональная экстра и 40 оверрайдов плагинов. LazyVim остаётся как есть — остальное включается по кусочкам.',
+			'52 опциональные экстры и 40 оверрайдов плагинов. LazyVim остаётся как есть — остальное включается по кусочкам.',
 		actions: [
 			{ text: '🚀 Быстрый старт', link: '/ru/getting-started', brand: true },
 			{ text: '🎬 Смотреть экстры', link: '/ru/extras' },
