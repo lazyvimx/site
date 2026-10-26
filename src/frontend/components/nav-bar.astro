@@ -37,7 +37,6 @@ const t = ui[lang]
 
 		<div class="nav-bar__extra">
 			<LangSwitch client:load locale={lang} {path} {...routing} />
-			<span class="nav-bar__divider" aria-hidden="true"></span>
 			<ThemeToggle client:load locale={lang} label={t.theme} />
 			<span class="nav-bar__divider" aria-hidden="true"></span>
 			<a class="nav-bar__social" href={site.github} target="_blank" rel="noopener" aria-label="GitHub">
@@ -172,6 +171,7 @@ const t = ui[lang]
 
 		&__extra {
 			display: none;
+			gap: 12px;
 			align-items: center;
 
 			@media (--tablet) {
@@ -197,7 +197,6 @@ const t = ui[lang]
 		&__divider {
 			width: 1px;
 			height: 24px;
-			margin: 0 8px;
 			background-color: var(--divider);
 		}
 
