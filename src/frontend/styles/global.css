@@ -63,6 +63,13 @@
 	--ui-accent: var(--brand);
 	--ui-card-bg: var(--panel-bg);
 	--ui-font-mono: var(--font-mono);
+	/* Меню языков угловатое и без тени, кнопка ростом и фоном как поиск рядом. */
+	--ui-menu-button-radius: 0;
+	--ui-menu-button-height: 40px;
+	--ui-menu-button-bg: var(--bg);
+	--ui-menu-radius: 0;
+	--ui-menu-item-radius: 0;
+	--ui-menu-shadow: none;
 
 	color-scheme: light dark;
 
