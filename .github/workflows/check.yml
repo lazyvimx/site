@@ -1,10 +1,8 @@
 name: Check
 
-# На main эти проверки вызывает workflow деплоя перед выкаткой,
-# поэтому отдельный прогон там был бы дублем.
+# На main эти проверки вызывает workflow деплоя перед выкаткой, а ветки
+# проверяются через PR. Отдельный прогон на push дал бы дубль на тот же коммит.
 on:
-  push:
-    branches-ignore: [main]
   pull_request:
   workflow_call:
   workflow_dispatch:
@@ -17,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: aimuzov-projects/infra-site-kit/check@v1
+      - uses: aimuzov/infra-site-kit/check@v5
       # e2e из infra-site-kit: сборка в Chromium. Браузер кэшируется по версии Playwright,
       # его системные библиотеки ставятся из apt каждый прогон.
       - id: playwright

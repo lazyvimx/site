@@ -1,4 +1,4 @@
-import { schemeOf, toggleTheme, watchTheme as watch, type Scheme } from '@aimuzov-projects/infra-site-kit/theme.js'
+import { schemeOf, toggleTheme, watchTheme as watch, type Scheme } from '@aimuzov/infra-site-kit/theme.js'
 
 // Логика темы в infra-site-kit, выбор до отрисовки ставит ThemeBoot в layouts/base.astro.
 export type { Scheme }

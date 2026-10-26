@@ -1,9 +1,4 @@
-import {
-	expectAccessible,
-	expectNotFound,
-	pageScheme,
-	siteChecks,
-} from '@aimuzov-projects/infra-site-kit/playwright/checks'
+import { expectAccessible, expectNotFound, pageScheme, siteChecks } from '@aimuzov/infra-site-kit/playwright/checks'
 import { expect, test, type Page } from '@playwright/test'
 
 // Проверки, общие для всех сайтов: страницы из sitemap, axe в обеих темах,
@@ -29,7 +24,15 @@ test('the Russian page links to its English twin and back', async ({ page }) => 
 		'https://lazyvimx.aimuzov.online/extras',
 	)
 
-	await expect(page.locator('.nav-bar__lang')).toHaveAttribute('href', '/extras')
+	const menu = page.locator('.nav-bar details.lang')
+
+	await expect(menu.locator('summary')).toHaveText(/RU/)
+	await menu.locator('summary').click()
+	await expect(menu.getByRole('link', { name: /English/ })).toHaveAttribute('href', '/extras')
+	await menu.getByRole('link', { name: /English/ }).click()
+	await expect(page).toHaveURL(/\/extras$/)
+	await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+	expect((await page.context().cookies()).find((c) => c.name === 'lang')?.value).toBe('en')
 })
 
 test('old VitePress anchors still lead to their sections', async ({ page }) => {

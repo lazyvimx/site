@@ -1,8 +1,11 @@
 ---
-import ThemeToggle from '#frontend/components/theme-toggle.svelte'
+import { LOCALE_NAMES } from '@aimuzov/infra-site-kit/i18n.js'
+import LangSwitch from '@aimuzov/infra-site-kit/ui/lang-switch.svelte'
+import ThemeToggle from '@aimuzov/infra-site-kit/ui/theme-toggle.svelte'
+
 import { site } from '#frontend/data/site.ts'
 import { ui } from '#frontend/data/ui.ts'
-import { alternatePath, type Lang, langOf, pagePath } from '#frontend/lib/i18n.ts'
+import { alternatePath, type Lang, langOf, langs, pagePath, routing } from '#frontend/lib/i18n.ts'
 
 type Props = {
 	/** У страниц документации шапка делит строку с сайдбаром. */
@@ -12,9 +15,9 @@ type Props = {
 const { sidebar = false } = Astro.props
 const path = Astro.url.pathname.replace(/\.html$/, '')
 const lang: Lang = langOf(path)
-const other: Lang = lang === 'en' ? 'ru' : 'en'
+// На узком экране меню нет: языки, кроме текущего, идут строками в выпадающем экране.
+const others = langs.filter((to) => to !== lang)
 const t = ui[lang]
-const alternate = alternatePath(path, other)
 ---
 
 <header class:list={['nav-bar', { 'nav-bar--sidebar': sidebar }]}>
@@ -33,14 +36,8 @@ const alternate = alternatePath(path, other)
 		</button>
 
 		<div class="nav-bar__extra">
-			<a class="nav-bar__lang" href={alternate} hreflang={other} lang={other} aria-label={t.lang}>
-				<svg class="nav-bar__icon" viewBox="0 0 24 24" aria-hidden="true">
-					<path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"></path>
-				</svg>
-				{ui[other].langName}
-			</a>
-			<span class="nav-bar__divider" aria-hidden="true"></span>
-			<ThemeToggle client:load label={t.theme} />
+			<LangSwitch client:load locale={lang} {path} {...routing} />
+			<ThemeToggle client:load locale={lang} label={t.theme} />
 			<span class="nav-bar__divider" aria-hidden="true"></span>
 			<a class="nav-bar__social" href={site.github} target="_blank" rel="noopener" aria-label="GitHub">
 				<svg class="nav-bar__icon nav-bar__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
@@ -59,12 +56,14 @@ const alternate = alternatePath(path, other)
 
 <!-- Узкий экран: язык, тема и GitHub уезжают в выпадающий экран под шапкой. -->
 <div class="nav-screen" id="nav-screen" popover>
-	<a class="nav-screen__row" href={alternate} hreflang={other} lang={other}>
-		{ui[other].langName}
-	</a>
+	{others.map((to) => (
+		<a class="nav-screen__row" href={alternatePath(path, to)} hreflang={to} lang={to}>
+			{LOCALE_NAMES[to]}
+		</a>
+	))}
 	<div class="nav-screen__row">
 		<span>{t.theme}</span>
-		<ThemeToggle client:load label={t.theme} peek={false} />
+		<ThemeToggle client:load locale={lang} label={t.theme} peek={false} />
 	</div>
 	<a class="nav-screen__row" href={site.github} target="_blank" rel="noopener">
 		GitHub ↗
@@ -172,6 +171,7 @@ const alternate = alternatePath(path, other)
 
 		&__extra {
 			display: none;
+			gap: 12px;
 			align-items: center;
 
 			@media (--tablet) {
@@ -179,7 +179,6 @@ const alternate = alternatePath(path, other)
 			}
 		}
 
-		&__lang,
 		&__social {
 			display: flex;
 			gap: 6px;
@@ -198,7 +197,6 @@ const alternate = alternatePath(path, other)
 		&__divider {
 			width: 1px;
 			height: 24px;
-			margin: 0 8px;
 			background-color: var(--divider);
 		}
 

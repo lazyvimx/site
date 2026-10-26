@@ -1,4 +1,4 @@
-import preset from '@aimuzov-projects/infra-site-kit/playwright'
+import preset from '@aimuzov/infra-site-kit/playwright'
 import type { PlaywrightTestConfig } from '@playwright/test'
 
 const port = Number(process.env.E2E_PORT ?? 4399)
