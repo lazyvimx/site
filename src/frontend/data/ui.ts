@@ -5,7 +5,6 @@ export const ui = {
 	en: {
 		description: 'An enhancement layer on top of LazyVim: 52 optional extras and 40 plugin overrides',
 		locale: 'en_US',
-		langName: 'English',
 		search: 'Search',
 		searchPlaceholder: 'Search docs',
 		searchEmpty: 'No results for',
@@ -19,7 +18,6 @@ export const ui = {
 		prev: 'Previous page',
 		next: 'Next page',
 		theme: 'Toggle dark mode',
-		lang: 'Change language',
 		mainNav: 'Main navigation',
 		docsNav: 'Documentation',
 		skip: 'Skip to content',
@@ -33,7 +31,6 @@ export const ui = {
 	ru: {
 		description: 'Слой улучшений поверх LazyVim: 52 опциональные экстры и 40 оверрайдов плагинов',
 		locale: 'ru_RU',
-		langName: 'Русский',
 		search: 'Поиск',
 		searchPlaceholder: 'Поиск по документации',
 		searchEmpty: 'Ничего не нашлось по запросу',
@@ -47,7 +44,6 @@ export const ui = {
 		prev: 'Предыдущая',
 		next: 'Следующая',
 		theme: 'Тема',
-		lang: 'Сменить язык',
 		mainNav: 'Основная навигация',
 		docsNav: 'Документация',
 		skip: 'Перейти к содержимому',

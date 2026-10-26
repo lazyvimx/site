@@ -1,6 +1,6 @@
 <script lang="ts">
-	import '@aimuzov-projects/infra-site-kit/theme-peek.css'
-	import { themePeek } from '@aimuzov-projects/infra-site-kit/theme-peek.js'
+	import '@aimuzov/infra-site-kit/theme-peek.css'
+	import { themePeek } from '@aimuzov/infra-site-kit/theme-peek.js'
 	import { onMount } from 'svelte'
 
 	import { theme, toggleScheme, watchTheme } from '#frontend/lib/theme.svelte.ts'

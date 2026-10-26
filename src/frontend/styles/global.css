@@ -55,6 +55,15 @@
 	--vim-visual-bg: light-dark(rgb(114 135 253 / 25%), rgb(138 173 244 / 25%));
 	--section-bg: light-dark(#bcc0cc, #363a4f);
 
+	/* Компоненты `ui/` из infra-site-kit (меню языков) рисуются в палитре сайта. */
+	--ui-bg: var(--bg);
+	--ui-fg: var(--text-1);
+	--ui-muted: var(--text-3);
+	--ui-border: var(--divider);
+	--ui-accent: var(--brand);
+	--ui-card-bg: var(--panel-bg);
+	--ui-font-mono: var(--font-mono);
+
 	color-scheme: light dark;
 
 	&[data-theme='light'] {

@@ -1,4 +1,4 @@
-import kit from '@aimuzov-projects/infra-site-kit/stylelint'
+import kit from '@aimuzov/infra-site-kit/stylelint'
 
 export default {
 	...kit,

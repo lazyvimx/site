@@ -34,9 +34,10 @@
 		"svelte": "5.57.2"
 	},
 	"devDependencies": {
-		"@aimuzov-projects/infra-site-kit": "github:aimuzov-projects/infra-site-kit#v1.10.0",
+		"@aimuzov/infra-site-kit": "github:aimuzov/infra-site-kit#feature/lang-menu",
 		"@astrojs/check": "0.9.10",
 		"@csstools/postcss-global-data": "4.0.0",
+		"@lucide/svelte": "1.39.0",
 		"@playwright/test": "1.64.0",
 		"@shikijs/themes": "4.5.0",
 		"@types/hast": "3.0.5",

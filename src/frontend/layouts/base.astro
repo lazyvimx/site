@@ -2,16 +2,19 @@
 import '@fontsource-variable/jetbrains-mono/wght.css'
 import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 import fontLatin from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url'
-import Metrika from '@aimuzov-projects/infra-site-kit/metrika.astro'
-import MetrikaPixel from '@aimuzov-projects/infra-site-kit/metrika-pixel.astro'
-import ThemeBoot from '@aimuzov-projects/infra-site-kit/theme-boot.astro'
+import Metrika from '@aimuzov/infra-site-kit/metrika.astro'
+import MetrikaPixel from '@aimuzov/infra-site-kit/metrika-pixel.astro'
+import I18nHead from '@aimuzov/infra-site-kit/i18n-head.astro'
+import ThemeBoot from '@aimuzov/infra-site-kit/theme-boot.astro'
+import '@aimuzov/infra-site-kit/base.css'
+import '@aimuzov/infra-site-kit/ui/tokens.css'
 
 import VimShell from '#frontend/components/vim/vim-shell.svelte'
 import { navPages } from '#frontend/data/nav.ts'
 import { site } from '#frontend/data/site.ts'
 import { ui } from '#frontend/data/ui.ts'
 import version from '#frontend/data/version.json'
-import { alternatePath, type Lang, langOf, langs, pagePath, slugOf } from '#frontend/lib/i18n.ts'
+import { alternatePath, type Lang, langOf, pagePath, routing, slugOf } from '#frontend/lib/i18n.ts'
 import { pageTitle } from '#frontend/lib/title.ts'
 import '#frontend/styles/global.css'
 
@@ -45,17 +48,7 @@ const pages = navPages.map((page) => ({ slug: page.slug, text: page.text[lang], 
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
-		{index ? (
-			<>
-				<link rel="canonical" href={canonical} />
-				{langs.map((to) => (
-					<link rel="alternate" hreflang={to} href={url(alternatePath(path, to))} />
-				))}
-				<link rel="alternate" hreflang="x-default" href={url(alternatePath(path, 'en'))} />
-			</>
-		) : (
-			<meta name="robots" content="noindex" />
-		)}
+		{index ? <I18nHead {...routing} /> : <meta name="robots" content="noindex" />}
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content={site.name} />
 		<meta property="og:url" content={canonical} />
