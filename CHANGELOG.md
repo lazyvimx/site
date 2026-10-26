@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.0](https://github.com/lazyvimx/site/compare/v1.3.1...v1.4.0) (2026-10-26)
+
+
+### Features
+
+* take i18n and the language menu from the shared infra-site-kit ([d8d412a](https://github.com/lazyvimx/site/commit/d8d412ab90e9fda2a9e80efd327392ef59c37475))
+* take i18n, the language menu and the theme button from the shared infra-site-kit ([75ecbf6](https://github.com/lazyvimx/site/commit/75ecbf6ace7d8dea92cbf3475204bfe29739ec50))
+* take the theme button from the shared infra-site-kit ([fd1cffe](https://github.com/lazyvimx/site/commit/fd1cffe1fdc772b9d7e6e9f82fd3db6fbed3aab6))
+
 ## [1.3.1](https://github.com/lazyvimx/site/compare/v1.3.0...v1.3.1) (2026-10-20)
 
 
