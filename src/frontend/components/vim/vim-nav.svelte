@@ -1,10 +1,12 @@
 <!-- Клавиши vim поверх сайта: движения, буферы-страницы, метки на ссылках,
 командная строка и which-key. -->
 <script lang="ts">
+	import { isPanelHidden, setPanelHidden } from '@aimuzov/infra-site-kit/panels.js'
 	import { onMount, tick } from 'svelte'
 
 	import VimHints from '#frontend/components/vim/vim-hints.svelte'
 	import VimWhichKey from '#frontend/components/vim/vim-which-key.svelte'
+	import { site } from '#frontend/data/site.ts'
 	import type { Lang } from '#frontend/lib/i18n.ts'
 	import { theme, toggleScheme, watchTheme } from '#frontend/lib/theme.svelte.ts'
 	import { isEditingContent, isTouchOnly, keyCandidates } from '#frontend/lib/vim-keys.ts'
@@ -153,6 +155,28 @@
 		el.scrollIntoView({ block: 'nearest' })
 	}
 
+	// Как neo-tree в lazyvimx: скрытую панель открывает с фокусом, из открытой
+	// забирает фокус, а если фокус уже в ней -- прячет.
+	function togglePane(panel: string, pane: string, link: string) {
+		const button = document.querySelector<HTMLElement>(`button[data-panel="${panel}"]`)
+
+		// Нет кнопки -- панель на узком экране не колонка, и прятать нечего.
+		if (!button?.offsetParent) return focusFirst(link)
+
+		if (isPanelHidden(panel)) {
+			setPanelHidden(panel, false, { prefix: site.panelsPrefix })
+
+			return focusFirst(link)
+		}
+
+		const active = document.activeElement as HTMLElement | null
+
+		if (!document.querySelector(pane)?.contains(active)) return focusFirst(link)
+
+		setPanelHidden(panel, true, { prefix: site.panelsPrefix })
+		active?.blur()
+	}
+
 	function switchLang() {
 		location.assign(alternate)
 	}
@@ -206,8 +230,20 @@
 		{ seq: '?', group: 'find', en: 'all the keys', ru: 'все клавиши', run: () => (vim.sheet = true) },
 
 		{ seq: '  ', group: 'leader', en: 'search the site', ru: 'поиск по сайту', run: openSearch },
-		{ seq: ' e', group: 'leader', en: 'file tree', ru: 'дерево файлов', run: () => focusFirst('.sidebar__link') },
-		{ seq: ' o', group: 'leader', en: 'outline', ru: 'оглавление', run: () => focusFirst('#toc .toc__link') },
+		{
+			seq: ' e',
+			group: 'leader',
+			en: 'file tree, open / close',
+			ru: 'дерево файлов, открыть / закрыть',
+			run: () => togglePane('sidebar', '#sidebar', '.sidebar__link'),
+		},
+		{
+			seq: ' o',
+			group: 'leader',
+			en: 'outline, open / close',
+			ru: 'оглавление, открыть / закрыть',
+			run: () => togglePane('toc', '.doc-page__aside', '#toc .toc__link'),
+		},
 		{ seq: ' l', group: 'leader', en: 'language', ru: 'язык', run: switchLang },
 		{ seq: ' ut', group: 'leader', en: 'theme', ru: 'тема', run: toggleScheme },
 		{ seq: ' gg', group: 'leader', en: 'repository', ru: 'репозиторий', run: openRepo },
