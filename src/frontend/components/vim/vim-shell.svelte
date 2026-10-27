@@ -19,10 +19,9 @@
 		alternate: string
 		version: string
 		github: string
-		author: string
 	}
 
-	let { lang, slug, pages, home, alternate, version, github, author }: Props = $props()
+	let { lang, slug, pages, home, alternate, version, github }: Props = $props()
 
 	// Кнопка поиска в шапке -- статический HTML, она только просит открыть поиск.
 	onMount(() => {
@@ -36,7 +35,7 @@
 	})
 </script>
 
-<VimStatusline {lang} {slug} {version} {github} {author} />
+<VimStatusline {lang} {slug} {version} {github} />
 <VimNav {lang} {slug} {pages} {home} {alternate} {github} />
 <VimTutor {lang} />
 <Search {lang} />
