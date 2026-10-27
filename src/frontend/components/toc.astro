@@ -78,6 +78,12 @@ const items = headings.filter((heading) => heading.depth === 2)
 				color: var(--text-1);
 				transition: color 0.25s;
 			}
+
+			/* Колонка и выпадающий список прокручиваются и режут всё, что за краем,
+			   поэтому обводка фокуса рисуется внутри ссылки. */
+			&:focus-visible {
+				outline-offset: -2px;
+			}
 		}
 
 		/* Маркер текущего раздела на линии слева. */
