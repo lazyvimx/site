@@ -9,6 +9,8 @@ export const site = {
 	github: 'https://github.com/lazyvimx/nvim',
 	/** Репозиторий сайта. */
 	repo: 'https://github.com/lazyvimx/site',
+	/** Префикс ключей скрытых панелей в localStorage. */
+	panelsPrefix: 'lazyvimx',
 	/** Автор: ссылка из статуслайна. */
 	author: 'https://github.com/aimuzov',
 }

@@ -2,6 +2,7 @@
 import PanelToggle from '@aimuzov/infra-site-kit/ui/panel-toggle.svelte'
 
 import { nav } from '#frontend/data/nav.ts'
+import { site } from '#frontend/data/site.ts'
 import { ui } from '#frontend/data/ui.ts'
 import { type Lang, pagePath } from '#frontend/lib/i18n.ts'
 
@@ -22,7 +23,7 @@ const { lang, slug } = Astro.props
 			side="left"
 			name={ui[lang].sidebarPanel}
 			locale={lang}
-			prefix="lazyvimx"
+			prefix={site.panelsPrefix}
 		/>
 	</div>
 	<div class="sidebar__tree" id="sidebar-tree">
