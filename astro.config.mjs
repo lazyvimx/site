@@ -53,7 +53,7 @@ export default defineConfig({
 		processor: satteri({ hastPlugins: [docPlugin] }),
 	},
 	// Astro кладёт в `<meta>` страницы CSP с хешами своих скриптов и стилей.
-	// Компонент Яндекс Метрики из infra-site-kit сам добавляет свой хеш и источники.
+	// Компоненты Яндекс Метрики и Sentry из infra-site-kit сами добавляют свои хеши и источники.
 	// `frame-ancestors` в `<meta>` не работает, встраивание блокирует Caddy
 	// через `X-Frame-Options`.
 	security: {

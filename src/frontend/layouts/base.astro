@@ -4,6 +4,7 @@ import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 import fontLatin from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url'
 import Metrika from '@aimuzov/infra-site-kit/metrika.astro'
 import MetrikaPixel from '@aimuzov/infra-site-kit/metrika-pixel.astro'
+import Sentry from '@aimuzov/infra-site-kit/sentry.astro'
 import I18nHead from '@aimuzov/infra-site-kit/i18n-head.astro'
 import ThemeBoot from '@aimuzov/infra-site-kit/theme-boot.astro'
 import '@aimuzov/infra-site-kit/base.css'
@@ -70,6 +71,7 @@ const pages = navPages.map((page) => ({ slug: page.slug, text: page.text[lang], 
 		<script is:inline src="/theme-legacy.js"></script>
 		<ThemeBoot />
 		<Metrika id={site.metrikaId} init={{ webvisor: true }} />
+		<Sentry />
 		<slot name="head" />
 	</head>
 	<body>
