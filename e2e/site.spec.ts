@@ -115,6 +115,28 @@ test.describe('search', () => {
 			await expect(page.locator('.search__hit').first()).toContainText(title)
 		})
 	}
+
+	test('Ctrl-j/k move through the results, and Esc gives the keys back', async ({ page }) => {
+		await page.goto('/extras')
+		await page.keyboard.press('/')
+
+		const input = page.locator('.search__input')
+		const hits = page.locator('.search__hit')
+
+		await input.fill('scrollbar')
+		await expect(hits.nth(1)).toBeVisible()
+		await page.keyboard.press('Control+j')
+		await expect(hits.nth(1)).toHaveClass(/search__hit--active/)
+		// Ctrl-k в ЙЦУКЕН приходит как "л", код клавиши тот же.
+		await input.dispatchEvent('keydown', { key: 'л', code: 'KeyK', ctrlKey: true })
+		await expect(hits.first()).toHaveClass(/search__hit--active/)
+
+		// Закрытый поиск отдаёт клавиши обратно: j сразу после Esc листает страницу.
+		await page.keyboard.press('Escape')
+		await page.keyboard.press('j')
+		await expect(input).toBeHidden()
+		await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(0)
+	})
 })
 
 test.describe('the Russian 404', () => {

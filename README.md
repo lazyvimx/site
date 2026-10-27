@@ -34,7 +34,7 @@
 - **Docs** (`/getting-started`, `/extras`, …, and the same under `/ru/`): page texts live in [lazyvimx/nvim](https://github.com/lazyvimx/nvim) (`README*.md`, `docs/*.md`). Edit them there, this repo only lays them out.
 - **Landing pages** (`/`, `/ru/`): hero with the demo recording and the feature tiles from [`src/frontend/data/home.ts`](src/frontend/data/home.ts).
 - **The Neovim layer** ([`src/frontend/components/vim`](src/frontend/components/vim)): lualine-style statusline, `j`/`k`/`gg`/`G`/`}`/`L`/`H` and friends, link hints on `f`, a command line on `:`, which-key, an interactive tutor. Keys work on the Russian layout too.
-- **Search**: [Pagefind](https://pagefind.app), a separate index per language. Opens with `/`, Cmd/Ctrl-K or the button in the header.
+- **Search**: [Pagefind](https://pagefind.app) in the dialog from [infra-site-kit](https://github.com/aimuzov/infra-site-kit), a separate index per language. Opens with `/`, Cmd/Ctrl-K or the button in the header.
 - **Demo recordings**: mp4 from the `assets` branch of lazyvimx/nvim via jsDelivr, loaded only once scrolled into view.
 - **Analytics**: Yandex Metrika from [infra-site-kit](https://github.com/aimuzov-projects/infra-site-kit), it adds its own sources to the CSP.
 
