@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/lazyvimx/site/compare/v1.6.0...v1.7.0) (2026-10-27)
+
+
+### Features
+
+* **statusline:** take the credit from infra-site-kit ([d341386](https://github.com/lazyvimx/site/commit/d341386e30cc82a5275ba8fb5ce8540772a18dc5))
+
 ## [1.6.0](https://github.com/lazyvimx/site/compare/v1.5.0...v1.6.0) (2026-10-27)
 
 
