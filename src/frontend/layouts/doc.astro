@@ -235,15 +235,17 @@ const t = ui[lang]
 		&__aside {
 			display: none;
 
+			/* Колонка выше текста на 32px: кнопка панели встаёт на одну линию с кнопкой сайдбара. */
 			@media (--wide) {
 				position: sticky;
-				top: calc(var(--nav-height) + 48px);
+				top: calc(var(--nav-height) + 16px);
 				overflow-y: auto;
 				display: block;
 				flex-shrink: 0;
 				align-self: flex-start;
 				width: var(--toc-width);
-				max-height: calc(100dvh - var(--nav-height) - 48px - var(--statusline-height));
+				max-height: calc(100dvh - var(--nav-height) - 16px - var(--statusline-height));
+				margin-top: -32px;
 				margin-left: var(--toc-gap);
 				transition:
 					width 0.2s ease,
