@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.0](https://github.com/lazyvimx/site/compare/v1.5.0...v1.6.0) (2026-10-27)
+
+
+### Features
+
+* **vim:** toggle the sidebar and the outline with &lt;leader&gt;e and &lt;leader&gt;o ([afb5496](https://github.com/lazyvimx/site/commit/afb5496e483630be08a74aa6ed18f8d58bdb966a))
+* **vim:** toggle the sidebar and the outline with &lt;leader&gt;e and &lt;leader&gt;o ([71885fb](https://github.com/lazyvimx/site/commit/71885fb6650b8747816d0b30677d75caaadaee42))
+
+
+### Bug Fixes
+
+* keep the focus ring of outline links inside the scrolling column ([49f4d12](https://github.com/lazyvimx/site/commit/49f4d128bb45c62dacee51ec2bd86296121312d0))
+
 ## [1.5.0](https://github.com/lazyvimx/site/compare/v1.4.0...v1.5.0) (2026-10-27)
 
 
