@@ -1,4 +1,6 @@
 ---
+import PanelsBoot from '@aimuzov/infra-site-kit/panels-boot.astro'
+import PanelToggle from '@aimuzov/infra-site-kit/ui/panel-toggle.svelte'
 import type { MarkdownHeading } from 'astro'
 
 import NavBar from '#frontend/components/nav-bar.astro'
@@ -17,6 +19,8 @@ const t = ui[lang]
 ---
 
 <Base {title} {description}>
+	<!-- Префикс тот же, что у кнопок панелей здесь и в сайдбаре. -->
+	<PanelsBoot slot="head" panels={['sidebar', 'toc']} prefix="lazyvimx" />
 	<NavBar sidebar />
 	<Sidebar {lang} {slug} />
 
@@ -41,6 +45,17 @@ const t = ui[lang]
 			<Pager {lang} {slug} />
 		</main>
 		<aside class="doc-page__aside">
+			<div class="doc-page__toggle">
+				<PanelToggle
+					client:load
+					panel="toc"
+					controls="toc"
+					side="right"
+					name={t.outlinePanel}
+					locale={lang}
+					prefix="lazyvimx"
+				/>
+			</div>
 			<Toc {lang} {headings} id="toc" />
 		</aside>
 	</div>
@@ -139,7 +154,7 @@ const t = ui[lang]
 		@media (--desktop) {
 			position: fixed;
 			right: 0;
-			left: var(--sidebar-width);
+			left: var(--sidebar-column);
 			margin-top: 0;
 			padding: 0 32px;
 		}
@@ -182,6 +197,10 @@ const t = ui[lang]
 
 	/* Колонка текста по центру и оглавление справа, размеры как у VitePress. */
 	.doc-page {
+		/* Свёрнутое оглавление, как и сайдбар, оставляет полоску под кнопку. */
+		--toc-width: 224px;
+		--toc-gap: 112px;
+
 		display: flex;
 		justify-content: center;
 		padding: 32px 24px 0;
@@ -191,7 +210,12 @@ const t = ui[lang]
 		}
 
 		@media (--desktop) {
-			padding: calc(var(--nav-height) + 48px + 32px) 32px 0 calc(var(--sidebar-width) + 32px);
+			padding: calc(var(--nav-height) + 48px + 32px) 32px 0 calc(var(--sidebar-column) + 32px);
+			transition: padding 0.2s ease;
+		}
+
+		@media (--reduced-motion) {
+			transition: none;
 		}
 
 		@media (--wide) {
@@ -218,9 +242,35 @@ const t = ui[lang]
 				display: block;
 				flex-shrink: 0;
 				align-self: flex-start;
-				width: 224px;
+				width: var(--toc-width);
 				max-height: calc(100dvh - var(--nav-height) - 48px - var(--statusline-height));
-				margin-left: 112px;
+				margin-left: var(--toc-gap);
+				transition:
+					width 0.2s ease,
+					margin 0.2s ease;
+			}
+
+			@media (--wide) and (--reduced-motion) {
+				transition: none;
+			}
+		}
+
+		/* Кнопка панели из infra-site-kit над оглавлением. */
+		&__toggle {
+			--ui-control-height: 32px;
+
+			display: flex;
+			margin-bottom: 16px;
+		}
+	}
+
+	:global(:root[data-panel-toc='hidden']) .doc-page {
+		@media (--wide) {
+			--toc-width: 32px;
+			--toc-gap: 32px;
+
+			& .doc-page__aside :global(.toc) {
+				display: none;
 			}
 		}
 	}

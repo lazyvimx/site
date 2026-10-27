@@ -1,4 +1,6 @@
 ---
+import PanelToggle from '@aimuzov/infra-site-kit/ui/panel-toggle.svelte'
+
 import { nav } from '#frontend/data/nav.ts'
 import { ui } from '#frontend/data/ui.ts'
 import { type Lang, pagePath } from '#frontend/lib/i18n.ts'
@@ -12,24 +14,37 @@ const { lang, slug } = Astro.props
      на направляющей линии. На широком экране панель стоит слева всегда, на узком
      выезжает по кнопке "Меню" как popover. -->
 <nav class="sidebar" id="sidebar" popover aria-label={ui[lang].docsNav}>
-	{nav.map((group) => (
-		<section class="sidebar__group">
-			<h2 class="sidebar__folder">📁 {group.text[lang]}</h2>
-			<ul class="sidebar__files">
-				{group.items.map((item) => (
-					<li class:list={['sidebar__file', { 'sidebar__file--active': item.slug === slug }]}>
-						<a
-							class="sidebar__link"
-							href={pagePath(lang, item.slug)}
-							aria-current={item.slug === slug ? 'page' : undefined}
-						>
-							{item.icon} {item.text[lang]}
-						</a>
-					</li>
-				))}
-			</ul>
-		</section>
-	))}
+	<div class="sidebar__toggle">
+		<PanelToggle
+			client:load
+			panel="sidebar"
+			controls="sidebar-tree"
+			side="left"
+			name={ui[lang].sidebarPanel}
+			locale={lang}
+			prefix="lazyvimx"
+		/>
+	</div>
+	<div class="sidebar__tree" id="sidebar-tree">
+		{nav.map((group) => (
+			<section class="sidebar__group">
+				<h2 class="sidebar__folder">📁 {group.text[lang]}</h2>
+				<ul class="sidebar__files">
+					{group.items.map((item) => (
+						<li class:list={['sidebar__file', { 'sidebar__file--active': item.slug === slug }]}>
+							<a
+								class="sidebar__link"
+								href={pagePath(lang, item.slug)}
+								aria-current={item.slug === slug ? 'page' : undefined}
+							>
+								{item.icon} {item.text[lang]}
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		))}
+	</div>
 </nav>
 
 <style>
@@ -51,12 +66,32 @@ const { lang, slug } = Astro.props
 			z-index: 20;
 			top: 0;
 			display: block;
-			width: var(--sidebar-width);
+			width: var(--sidebar-column);
 			padding-top: var(--nav-height);
+			transition:
+				width 0.2s ease,
+				padding 0.2s ease;
+		}
+
+		@media (--desktop) and (--reduced-motion) {
+			transition: none;
 		}
 
 		&::backdrop {
 			background: rgb(0 0 0 / 60%);
+		}
+
+		/* Кнопка панели из infra-site-kit. На узком экране дерево и так выезжает по "Меню". */
+		&__toggle {
+			--ui-control-height: 32px;
+
+			display: none;
+			justify-content: flex-end;
+			padding-top: 16px;
+
+			@media (--desktop) {
+				display: flex;
+			}
 		}
 
 		&__group {
@@ -136,6 +171,21 @@ const { lang, slug } = Astro.props
 			&::after {
 				content: '.md';
 				color: var(--vim-dim);
+			}
+		}
+	}
+	/* Свёрнутый сайдбар -- полоска с одной кнопкой. Атрибут на <html> ставит
+	   PanelsBoot до отрисовки, ширину полоски задаёт --sidebar-column. */
+	:global(:root[data-panel-sidebar='hidden']) .sidebar {
+		@media (--desktop) {
+			padding-inline: 8px;
+
+			& .sidebar__toggle {
+				justify-content: center;
+			}
+
+			& .sidebar__tree {
+				display: none;
 			}
 		}
 	}
