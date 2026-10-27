@@ -1,14 +1,15 @@
 <!-- Статуслайн в духе lualine внизу вьюпорта: режим меняется на VISUAL при выделении
 текста, справа позиция прокрутки как позиция в файле. -->
 <script lang="ts">
+	import Credit from '@aimuzov/infra-site-kit/credit.svelte'
 	import { onMount } from 'svelte'
 
 	import type { Lang } from '#frontend/lib/i18n.ts'
 	import { startTutor, vim } from '#frontend/lib/vim-state.svelte.ts'
 
-	type Props = { lang: Lang; slug?: string; version: string; github: string; author: string }
+	type Props = { lang: Lang; slug?: string; version: string; github: string }
 
-	let { lang, slug, version, github, author }: Props = $props()
+	let { lang, slug, version, github }: Props = $props()
 
 	const release = $derived(`${github}/releases/tag/v${version}`)
 	const file = $derived(`~/lazyvimx/${slug ?? 'index'}.md`)
@@ -29,7 +30,6 @@
 	// До монтирования неизвестно, пройден ли туториал. Без этого кнопка мелькала бы
 	// в статическом HTML у тех, кто его уже прошёл.
 	const offerTutor = $derived(mounted && vim.tutor === null && !vim.tutorDone)
-	const credit = $derived(lang === 'ru' ? 'сделано с ❤️ aimuzov' : 'made with ❤️ by aimuzov')
 
 	// Эхо набранного, как showcmd: пробел лидера иначе выглядит пустотой.
 	const showcmd = $derived((vim.count + vim.pending).replace(/ /g, '␣'))
@@ -114,7 +114,10 @@
 		aria-label={lang === 'ru' ? 'Все клавиши' : 'All the keys'}
 		onclick={() => (vim.sheet = !vim.sheet)}>?</button
 	>
-	<a class="statusline__section statusline__section--credit" href={author} target="_blank" rel="noopener">{credit}</a>
+	<!-- Подпись из infra-site-kit: в полосе выглядывает лицо, строка выезжает по наведению. -->
+	<span class="statusline__section statusline__section--credit">
+		<Credit copyright={false} align="center" locale={lang} />
+	</span>
 	<span class="statusline__section statusline__section--percent">{percent}</span>
 </div>
 
@@ -203,16 +206,13 @@
 
 			/* Справа секцию подпирает скос следующей, ей тоже нужен запас. */
 			&--credit {
+				--credit-hover: var(--vim-accent);
+
 				padding-right: 26px;
-				transition: color 0.25s;
 
 				/* Путь к файлу и подпись первыми уходят на узких экранах. */
 				@media (width <= 720px) {
 					display: none;
-				}
-
-				&:hover {
-					color: var(--vim-accent);
 				}
 			}
 
