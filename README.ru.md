@@ -34,7 +34,7 @@
 - **Документация** (`/getting-started`, `/extras`, … и то же под `/ru/`): тексты страниц живут в [lazyvimx/nvim](https://github.com/lazyvimx/nvim) (`README*.md`, `docs/*.md`). Править их нужно там, здесь они только раскладываются по страницам.
 - **Лендинги** (`/`, `/ru/`): hero с демо-записью и плитки возможностей из [`src/frontend/data/home.ts`](src/frontend/data/home.ts).
 - **Слой Neovim** ([`src/frontend/components/vim`](src/frontend/components/vim)): статуслайн в духе lualine, `j`/`k`/`gg`/`G`/`}`/`L`/`H` и компания, метки на ссылках по `f`, командная строка по `:`, which-key, интерактивный туториал. Клавиши работают и на русской раскладке.
-- **Поиск**: [Pagefind](https://pagefind.app), отдельный индекс на каждый язык. Открывается по `/`, Cmd/Ctrl-K или кнопкой в шапке.
+- **Поиск**: [Pagefind](https://pagefind.app) в окне из [infra-site-kit](https://github.com/aimuzov/infra-site-kit), отдельный индекс на каждый язык. Открывается по `/`, Cmd/Ctrl-K или кнопкой в шапке.
 - **Демо-записи**: mp4 из ветки `assets` репозитория lazyvimx/nvim через jsDelivr, грузятся, только когда до них доскроллили.
 - **Аналитика**: Яндекс Метрика из [infra-site-kit](https://github.com/aimuzov-projects/infra-site-kit), свои источники в CSP она добавляет сама.
 
