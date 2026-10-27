@@ -14,6 +14,9 @@ export const ui = {
 		searchClose: 'to close',
 		menu: 'Menu',
 		outline: 'On this page',
+		// Кнопки панелей дописывают это к "Hide" и "Show".
+		sidebarPanel: 'the sidebar',
+		outlinePanel: 'the outline',
 		top: 'Return to top',
 		prev: 'Previous page',
 		next: 'Next page',
@@ -40,6 +43,9 @@ export const ui = {
 		searchClose: 'закрыть',
 		menu: 'Меню',
 		outline: 'На этой странице',
+		// Кнопки панелей дописывают это к "Скрыть" и "Показать".
+		sidebarPanel: 'навигацию',
+		outlinePanel: 'оглавление',
 		top: 'Наверх',
 		prev: 'Предыдущая',
 		next: 'Следующая',

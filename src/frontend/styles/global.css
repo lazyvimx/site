@@ -6,6 +6,8 @@
 
 	--nav-height: 64px;
 	--sidebar-width: 272px;
+	/* Место сайдбара в раскладке: свёрнутый оставляет полоску под кнопку. */
+	--sidebar-column: var(--sidebar-width);
 	--statusline-height: 26px;
 
 	--bg: light-dark(#eff1f5, #24273a);
@@ -72,6 +74,10 @@
 	--ui-menu-shadow: none;
 
 	color-scheme: light dark;
+
+	&[data-panel-sidebar='hidden'] {
+		--sidebar-column: 48px;
+	}
 
 	&[data-theme='light'] {
 		color-scheme: light;
