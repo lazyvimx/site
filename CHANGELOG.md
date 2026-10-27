@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/lazyvimx/site/compare/v1.7.0...v1.8.0) (2026-10-27)
+
+
+### Features
+
+* **search:** take the search dialog from infra-site-kit ([f463612](https://github.com/lazyvimx/site/commit/f463612d7754acd4adc0e81b16ccbef8b8fb75a4))
+* **search:** take the search dialog from infra-site-kit ([9a3e584](https://github.com/lazyvimx/site/commit/9a3e5849b65613f5a20c7f2045b984115a82e63a))
+
 ## [1.7.0](https://github.com/lazyvimx/site/compare/v1.6.0...v1.7.0) (2026-10-27)
 
 
