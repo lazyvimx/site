@@ -38,3 +38,31 @@ test('narrow screens have no panel buttons', async ({ page }) => {
 	await expect(sidebar(page)).toBeHidden()
 	await expect(toc(page)).toBeHidden()
 })
+
+// Как neo-tree в lazyvimx: первое нажатие уводит фокус в панель,
+// второе прячет её, третье возвращает.
+for (const { key, panel, link } of [
+	{ key: 'e', panel: 'sidebar', link: '.sidebar__link' },
+	{ key: 'o', panel: 'toc', link: '#toc .toc__link' },
+]) {
+	test(`<leader>${key} focuses, hides and brings back the ${panel}`, async ({ page }) => {
+		const leader = async () => {
+			await page.keyboard.press('Space')
+			await page.keyboard.press(key)
+		}
+		const root = page.locator('html')
+
+		await page.goto('/faq')
+
+		await leader()
+		await expect(page.locator(link).first()).toBeFocused()
+
+		await leader()
+		await expect(root).toHaveAttribute(`data-panel-${panel}`, 'hidden')
+		await expect(page.locator(link).first()).toBeHidden()
+
+		await leader()
+		await expect(root).not.toHaveAttribute(`data-panel-${panel}`, 'hidden')
+		await expect(page.locator(link).first()).toBeFocused()
+	})
+}

@@ -7,6 +7,7 @@ import NavBar from '#frontend/components/nav-bar.astro'
 import Pager from '#frontend/components/pager.astro'
 import Sidebar from '#frontend/components/sidebar.astro'
 import Toc from '#frontend/components/toc.astro'
+import { site } from '#frontend/data/site.ts'
 import { ui } from '#frontend/data/ui.ts'
 import type { Lang } from '#frontend/lib/i18n.ts'
 import Base from '#frontend/layouts/base.astro'
@@ -19,8 +20,7 @@ const t = ui[lang]
 ---
 
 <Base {title} {description}>
-	<!-- Префикс тот же, что у кнопок панелей здесь и в сайдбаре. -->
-	<PanelsBoot slot="head" panels={['sidebar', 'toc']} prefix="lazyvimx" />
+	<PanelsBoot slot="head" panels={['sidebar', 'toc']} prefix={site.panelsPrefix} />
 	<NavBar sidebar />
 	<Sidebar {lang} {slug} />
 
@@ -53,7 +53,7 @@ const t = ui[lang]
 					side="right"
 					name={t.outlinePanel}
 					locale={lang}
-					prefix="lazyvimx"
+					prefix={site.panelsPrefix}
 				/>
 			</div>
 			<Toc {lang} {headings} id="toc" />
