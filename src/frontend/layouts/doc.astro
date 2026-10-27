@@ -62,6 +62,7 @@ const t = ui[lang]
 </Base>
 
 <script>
+	import { watchSection } from '@aimuzov/infra-site-kit/section-spy.js'
 	import { mount } from 'svelte'
 
 	import DemoPlayer from '#frontend/components/demo-player.svelte'
@@ -107,32 +108,24 @@ const t = ui[lang]
 	// Текущий раздел в оглавлении справа: последний заголовок, ушедший под шапку.
 	const links = [...document.querySelectorAll<HTMLAnchorElement>('#toc .toc__link')]
 	const marker = document.querySelector<HTMLElement>('#toc .toc__marker')
-	let frame = 0
-
-	function spy() {
-		frame = 0
-
-		const offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) + 1
-		let active: HTMLAnchorElement | undefined
-
-		for (const link of links) {
-			const target = document.getElementById(decodeURIComponent(link.hash.slice(1)))
-
-			if (target && target.getBoundingClientRect().top <= offset) active = link
-		}
-
-		for (const link of links) link.classList.toggle('toc__link--active', link === active)
-
-		if (!marker) return
-
-		marker.style.opacity = active ? '1' : '0'
-
-		if (active) marker.style.top = `${active.offsetTop + 7}px`
-	}
+	const target = (link: HTMLAnchorElement) => decodeURIComponent(link.hash.slice(1))
 
 	if (links.length) {
-		addEventListener('scroll', () => (frame ||= requestAnimationFrame(spy)), { passive: true })
-		spy()
+		watchSection(
+			links.flatMap((link) => document.getElementById(target(link)) ?? []),
+			(heading) => {
+				const active = links.find((link) => target(link) === heading?.id)
+
+				for (const link of links) link.classList.toggle('toc__link--active', link === active)
+
+				if (!marker) return
+
+				marker.style.opacity = active ? '1' : '0'
+
+				if (active) marker.style.top = `${active.offsetTop + 7}px`
+			},
+			{ line: () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) + 1 },
+		)
 	}
 </script>
 
