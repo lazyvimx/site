@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.0](https://github.com/lazyvimx/site/compare/v1.8.0...v1.9.0) (2026-10-27)
+
+
+### Features
+
+* **sentry:** report browser errors to Sentry ([fa98be2](https://github.com/lazyvimx/site/commit/fa98be2410cd790f4470ba407be8e8efb666cc17))
+
+
+### Bug Fixes
+
+* **deps:** move to infra-site-kit 5.8.1 ([b5011f6](https://github.com/lazyvimx/site/commit/b5011f6dc964fa97b50990ed84849d52ef48c602))
+* **deps:** move to infra-site-kit 5.8.1 ([f804db3](https://github.com/lazyvimx/site/commit/f804db3781d549e16191ca84980cb9737639c264))
+
 ## [1.8.0](https://github.com/lazyvimx/site/compare/v1.7.0...v1.8.0) (2026-10-27)
 
 
