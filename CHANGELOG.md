@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/lazyvimx/site/compare/v1.4.0...v1.5.0) (2026-10-27)
+
+
+### Features
+
+* let the sidebar and the outline collapse and remember it ([102ed2e](https://github.com/lazyvimx/site/commit/102ed2edc421197ef240c66ac0b35451ae72dd23))
+* let the sidebar and the outline collapse and remember it ([a006241](https://github.com/lazyvimx/site/commit/a006241e290b502b6ddad9962d20662fefdbd9e7))
+
+
+### Bug Fixes
+
+* line up the outline button with the sidebar button ([1851271](https://github.com/lazyvimx/site/commit/1851271a120b72c72976c0005b661de1ec6485cb))
+
 ## [1.4.0](https://github.com/lazyvimx/site/compare/v1.3.1...v1.4.0) (2026-10-26)
 
 
