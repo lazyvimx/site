@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.1](https://github.com/lazyvimx/site/compare/v1.9.0...v1.9.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* **deps:** move to infra-site-kit 5.9.1 with the strict Sentry events ([48b4220](https://github.com/lazyvimx/site/commit/48b4220656038eb9197684ca098c7eca5294ea9f))
+* **deps:** move to infra-site-kit 5.9.1 with the strict Sentry events ([b04deb9](https://github.com/lazyvimx/site/commit/b04deb969da2558308888deec05d4f9e67563a7c))
+
 ## [1.9.0](https://github.com/lazyvimx/site/compare/v1.8.0...v1.9.0) (2026-10-27)
 
 
