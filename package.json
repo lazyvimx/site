@@ -34,9 +34,8 @@
 		"svelte": "5.57.2"
 	},
 	"devDependencies": {
-		"@aimuzov/infra-site-kit": "github:aimuzov/infra-site-kit#v5.9.1",
+		"@aimuzov/infra-site-kit": "github:aimuzov/infra-site-kit#661bf5760d9fda3c0ba6bd35ddb4cbb4537aa929",
 		"@astrojs/check": "0.9.10",
-		"@csstools/postcss-global-data": "4.0.0",
 		"@lucide/svelte": "1.39.0",
 		"@playwright/test": "1.64.0",
 		"@shikijs/themes": "4.5.0",
@@ -45,8 +44,6 @@
 		"@types/node": "26.6.5",
 		"oxlint": "1.88.0",
 		"pagefind": "1.5.2",
-		"postcss-custom-media": "12.0.3",
-		"postcss-nested": "8.0.1",
 		"prettier": "3.9.10",
 		"stylelint": "17.16.0",
 		"svelte-check": "4.7.6",
