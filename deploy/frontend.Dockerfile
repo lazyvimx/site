@@ -6,7 +6,7 @@
 FROM node:26.11.1-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund --loglevel=error
+RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund --loglevel=error
 # Тексты страниц живут в lazyvimx/nvim, в ветке main. BuildKit сверяет
 # её коммит на каждой сборке, так что слой и всё после него пересобираются ровно тогда,
 # когда документация поменялась, а релиз сайта для этого не нужен.
