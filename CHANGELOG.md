@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/lazyvimx/site/compare/v1.9.1...v1.10.0) (2026-11-11)
+
+
+### Features
+
+* **deploy:** publish Lazyvimx Site from GitHub Actions ([#41](https://github.com/lazyvimx/site/issues/41)) ([4aa5efd](https://github.com/lazyvimx/site/commit/4aa5efd1f30e978e7cbd6151500315d1d630fda0))
+
 ## [1.9.1](https://github.com/lazyvimx/site/compare/v1.9.0...v1.9.1) (2026-10-28)
 
 
